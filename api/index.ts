@@ -1,4 +1,6 @@
-import { app } from "../src/api/app";
+// CJS-compatible entry for Vercel Node runtime
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { app } = require("../src/api/app");
 
 type VercelRequestLike = {
   url?: string;
@@ -36,7 +38,7 @@ async function readBody(req: VercelRequestLike): Promise<Uint8Array | undefined>
   });
 }
 
-export default async function handler(req: VercelRequestLike, res: VercelResponseLike) {
+module.exports = async function handler(req: VercelRequestLike, res: VercelResponseLike) {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
   const body = await readBody(req);
 
@@ -49,10 +51,10 @@ export default async function handler(req: VercelRequestLike, res: VercelRespons
   const response = await app.handle(request);
 
   res.statusCode = response.status;
-  response.headers.forEach((value, key) => {
+  response.headers.forEach((value: string, key: string) => {
     res.setHeader(key, value);
   });
 
   const arrayBuffer = await response.arrayBuffer();
   res.end(Buffer.from(arrayBuffer));
-}
+};
