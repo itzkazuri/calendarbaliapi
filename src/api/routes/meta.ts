@@ -1,0 +1,30 @@
+import { Elysia } from "elysia";
+
+export const metaRoutes = new Elysia({ name: "meta" }).get("/meta", () => ({
+  name: "kalendarbaliapi",
+  version: "1.0.0",
+  endpoints: [
+    { method: "GET", path: "/api/libur-nasional" },
+    { method: "GET", path: "/api/libur-nasional/per-kategori" },
+    { method: "GET", path: "/api/libur-nasional/check" },
+    { method: "GET", path: "/api/libur-nasional/next" },
+    { method: "GET", path: "/api/libur-nasional/workdays" },
+    { method: "GET", path: "/api/rahinan" },
+    { method: "GET", path: "/api/rahinan/range" },
+    { method: "GET", path: "/api/dewasa-ayu" },
+    { method: "GET", path: "/api/dewasa-ayu/best" },
+    { method: "GET", path: "/api/dewasa-ayu/next" },
+    { method: "GET", path: "/api/otonan" },
+    { method: "GET", path: "/api/otonan/next" },
+    { method: "GET", path: "/api/otonan/check" },
+    { method: "GET", path: "/api/otonan/year" },
+    { method: "GET", path: "/api/odalan" },
+    { method: "GET", path: "/api/odalan/check" },
+    { method: "GET", path: "/api/odalan/presets" },
+    { method: "GET", path: "/api/odalan/banyak" },
+    { method: "GET", path: "/api/upacara-besar" },
+    { method: "GET", path: "/api/upacara-besar/ringkasan" },
+    { method: "GET", path: "/api/upacara-besar/cek" },
+    { method: "GET", path: "/api/calendar" },
+  ],
+}));

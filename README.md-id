@@ -1,33 +1,33 @@
 # Kalendar Bali API
 
-A modular Elysia (Bun) API for:
-- Indonesian national holidays
-- Balinese calendar (rahinan)
+API Elysia (Bun) yang modular untuk:
+- Libur nasional Indonesia
+- Kalender Bali (rahinan)
 - Otonan
 - Odalan
 - Dewasa Ayu
-- Major temple ceremonies
+- Upacara besar
 
-The project ships with pure TypeScript engines and REST endpoints. Swagger UI is included.
+Semua engine ditulis dalam TypeScript dan tersedia endpoint REST. Swagger UI sudah disertakan.
 
-## Quick Start
+## Cara Menjalankan
 
 ```bash
 bun install
 bun run dev
 ```
 
-Server runs on `http://localhost:3000`.
+Server berjalan di `http://localhost:3000`.
 
 ## Swagger
 
-Open:
+Buka:
 
 ```
 http://localhost:3000/swagger
 ```
 
-## API Overview
+## Ringkasan Endpoint
 
 Base path: `/api`
 
@@ -66,22 +66,22 @@ Base path: `/api`
 - `GET /api/upacara-besar?start=2026&end=2100&jenis=bhatara|panca|eka`
 - `GET /api/upacara-besar/cek?tahunSaka=1946`
 
-### Calendar (Month)
+### Kalender Bulanan
 - `GET /api/calendar?year=2026&month=3`
 
-## Rate Limiting
+## Rate Limit
 
-Default: `120 requests / 60 seconds` per IP.
-Headers:
+Default: `120 request / 60 detik` per IP.
+Header:
 - `x-ratelimit-limit`
 - `x-ratelimit-remaining`
 - `x-ratelimit-reset`
 
-## Notes
+## Catatan
 
-- Odalan and Upacara Besar are calculated by standard calendar rules. Real schedules are decided by local temple authorities.
-- Islamic holidays use a tabular Hijri calendar with optional `adjustmentIslam`.
+- Odalan dan Upacara Besar dihitung berdasarkan aturan kalender standar. Jadwal aktual ditentukan oleh pengempon pura setempat.
+- Hari besar Islam memakai kalender Hijriah tabular dengan opsi `adjustmentIslam`.
 
-## License
+## Lisensi
 
 MIT
