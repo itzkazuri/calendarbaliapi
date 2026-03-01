@@ -1,6 +1,5 @@
-// CJS-compatible entry for Vercel Node runtime
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { app } = require("../src/api/app");
+// ESM-compatible entry for Vercel Node runtime
+import { app } from "../src/api/app";
 
 type VercelRequestLike = {
   url?: string;
@@ -12,7 +11,7 @@ type VercelRequestLike = {
 type VercelResponseLike = {
   statusCode: number;
   setHeader: (key: string, value: string) => void;
-  end: (body?: Uint8Array) => void;
+  end: (body?: Uint8Array | string) => void;
 };
 
 async function readBody(req: VercelRequestLike): Promise<Uint8Array | undefined> {
@@ -38,7 +37,7 @@ async function readBody(req: VercelRequestLike): Promise<Uint8Array | undefined>
   });
 }
 
-module.exports = async function handler(req: VercelRequestLike, res: VercelResponseLike) {
+export default async function handler(req: any, res: any) {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
   const body = await readBody(req);
 
@@ -57,4 +56,4 @@ module.exports = async function handler(req: VercelRequestLike, res: VercelRespo
 
   const arrayBuffer = await response.arrayBuffer();
   res.end(Buffer.from(arrayBuffer));
-};
+}

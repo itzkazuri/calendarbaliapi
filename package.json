@@ -12,5 +12,6 @@
     "bun-types": "latest",
     "typescript": "^5.9.3"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "type": "module"
 }
