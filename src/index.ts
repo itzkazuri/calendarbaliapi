@@ -1,10 +1,13 @@
 import { Elysia } from "elysia";
 import { app } from "./api/app";
 
-app.listen(3000);
+if (!process.env.VERCEL) {
+  app.listen(3000);
+  console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
+  );
+}
 
 void Elysia;
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
-);
+export default app;

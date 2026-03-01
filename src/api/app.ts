@@ -43,3 +43,5 @@ export const app = new Elysia()
       .use(upacaraBesarRoutes)
       .use(calendarRoutes),
   );
+
+export default app;
