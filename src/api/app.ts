@@ -1,5 +1,4 @@
 import { Elysia } from "elysia";
-import { swagger } from "@elysiajs/swagger";
 import { rateLimit } from "./middleware/rateLimit";
 import { calendarRoutes } from "./routes/calendar";
 import { dewasaAyuRoutes } from "./routes/dewasaAyu";
@@ -11,17 +10,6 @@ import { rahinanBaliRoutes } from "./routes/rahinanBali";
 import { upacaraBesarRoutes } from "./routes/upacaraBesar";
 
 export const app = new Elysia()
-  .use(
-    swagger({
-      path: "/swagger",
-      documentation: {
-        info: {
-          title: "Kalendar Bali API",
-          version: "1.0.0",
-        },
-      },
-    }),
-  )
   .use(rateLimit({ windowMs: 60_000, max: 120 }))
   .onError(({ code, set }) => {
     if (code === "VALIDATION") {

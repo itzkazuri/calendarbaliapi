@@ -19,14 +19,6 @@ bun run dev
 
 Server runs on `http://localhost:3000`.
 
-## Swagger
-
-Open:
-
-```
-http://localhost:3000/swagger
-```
-
 ## API Overview
 
 Base path: `/api`

@@ -19,14 +19,6 @@ bun run dev
 
 Server berjalan di `http://localhost:3000`.
 
-## Swagger
-
-Buka:
-
-```
-http://localhost:3000/swagger
-```
-
 ## Ringkasan Endpoint
 
 Base path: `/api`
