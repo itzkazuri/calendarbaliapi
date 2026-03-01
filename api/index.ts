@@ -1,7 +1,58 @@
 import { app } from "../src/api/app";
 
-export const config = {
-  runtime: "edge",
+type VercelRequestLike = {
+  url?: string;
+  method?: string;
+  headers: Record<string, string | string[] | undefined>;
+  on: (event: "data" | "end" | "error", cb: (chunk?: any) => void) => void;
 };
 
-export default app.handle;
+type VercelResponseLike = {
+  statusCode: number;
+  setHeader: (key: string, value: string) => void;
+  end: (body?: Uint8Array) => void;
+};
+
+async function readBody(req: VercelRequestLike): Promise<Uint8Array | undefined> {
+  return await new Promise((resolve, reject) => {
+    const chunks: Uint8Array[] = [];
+    req.on("data", (chunk?: any) => {
+      if (!chunk) return;
+      const arr = chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk);
+      chunks.push(arr);
+    });
+    req.on("end", () => {
+      if (!chunks.length) return resolve(undefined);
+      const total = chunks.reduce((sum, c) => sum + c.byteLength, 0);
+      const merged = new Uint8Array(total);
+      let offset = 0;
+      for (const c of chunks) {
+        merged.set(c, offset);
+        offset += c.byteLength;
+      }
+      resolve(merged);
+    });
+    req.on("error", reject);
+  });
+}
+
+export default async function handler(req: VercelRequestLike, res: VercelResponseLike) {
+  const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+  const body = await readBody(req);
+
+  const request = new Request(url.toString(), {
+    method: req.method,
+    headers: req.headers as HeadersInit,
+    body: body ? (body as BodyInit) : undefined,
+  });
+
+  const response = await app.handle(request);
+
+  res.statusCode = response.status;
+  response.headers.forEach((value, key) => {
+    res.setHeader(key, value);
+  });
+
+  const arrayBuffer = await response.arrayBuffer();
+  res.end(Buffer.from(arrayBuffer));
+}
