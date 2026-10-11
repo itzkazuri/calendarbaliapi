@@ -1,9 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "bunVersion": "1.x",
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/src/index.ts" }
-  ]
+  "bunVersion": "1.x"
 }
