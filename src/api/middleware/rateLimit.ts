@@ -30,6 +30,7 @@ export function rateLimit(options: RateLimitOptions = {}) {
 
   return new Elysia({ name: "rate-limit" }).onBeforeHandle(({ request, set }) => {
     const key = getClientKey(request);
+    console.log("RATE LIMIT CHECK for key:", key);
     const now = Date.now();
 
     const bucket = store.get(key);
