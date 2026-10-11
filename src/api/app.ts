@@ -7,6 +7,8 @@ import { odalanRoutes } from "./routes/odalan";
 import { otonanRoutes } from "./routes/otonan";
 import { rahinanBaliRoutes } from "./routes/rahinanBali";
 import { upacaraBesarRoutes } from "./routes/upacaraBesar";
+import { indexHtml } from "./indexHtml";
+import { faviconSvg, iconPngBuffer } from "./assetsData";
 
 interface Bucket {
   count: number;
@@ -87,20 +89,51 @@ export const app = new Elysia()
       message: "Terjadi kesalahan di server. Coba lagi nanti.",
     };
   })
-  .get("/", () => Bun.file("index.html"))
-  .get("/favicon.ico", () => Bun.file("assets/favoicon.svg"))
+  .get("/", () => {
+    return new Response(indexHtml, {
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=3600",
+      },
+    });
+  })
+  .get("/favicon.ico", () => {
+    return new Response(faviconSvg, {
+      headers: {
+        "content-type": "image/svg+xml",
+        "cache-control": "public, max-age=86400",
+      },
+    });
+  })
   .get("/assets/*", async ({ params, set }) => {
     const filename = (params as Record<string, string>)["*"] || "";
     const safePath = filename.replace(/\.\./g, "");
-    let file = Bun.file(`assets/${safePath}`);
-    if (!(await file.exists()) && safePath === "logo.png") {
-      file = Bun.file("assets/icon.png");
+
+    if (safePath === "favoicon.svg") {
+      return new Response(faviconSvg, {
+        headers: {
+          "content-type": "image/svg+xml",
+          "cache-control": "public, max-age=86400",
+        },
+      });
     }
-    if (!(await file.exists())) {
-      set.status = 404;
-      return { error: "Not Found", message: "Asset tidak ditemukan." };
+
+    if (safePath === "icon.png" || safePath === "logo.png") {
+      return new Response(iconPngBuffer, {
+        headers: {
+          "content-type": "image/png",
+          "cache-control": "public, max-age=86400",
+        },
+      });
     }
-    return file;
+
+    const file = Bun.file(`assets/${safePath}`);
+    if (await file.exists()) {
+      return file;
+    }
+
+    set.status = 404;
+    return { error: "Not Found", message: "Asset tidak ditemukan." };
   })
   .group("/api", (api: any) =>
     api

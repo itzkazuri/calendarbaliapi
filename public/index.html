@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n-title="title">Kalender Bali API - Dokumentasi & Panduan Penggunaan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--background)',
+                        foreground: 'var(--foreground)',
+                        card: 'var(--card)',
+                        'card-foreground': 'var(--card-foreground)',
+                        primary: 'var(--primary)',
+                        'primary-foreground': 'var(--primary-foreground)',
+                        secondary: 'var(--secondary)',
+                        'secondary-foreground': 'var(--secondary-foreground)',
+                        muted: 'var(--muted)',
+                        'muted-foreground': 'var(--muted-foreground)',
+                        accent: 'var(--accent)',
+                        'accent-foreground': 'var(--accent-foreground)',
+                        destructive: 'var(--destructive)',
+                        'destructive-foreground': 'var(--destructive-foreground)',
+                        success: 'var(--success)',
+                        'success-foreground': 'var(--success-foreground)',
+                        warning: 'var(--warning)',
+                        'warning-foreground': 'var(--warning-foreground)',
+                        info: 'var(--info)',
+                        'info-foreground': 'var(--info-foreground)',
+                        border: 'var(--border)',
+                        input: 'var(--input)',
+                        ring: 'var(--ring)'
+                    },
+                    borderRadius: {
+                        sm: 'calc(var(--radius) * 0.6)',
+                        md: 'calc(var(--radius) * 0.8)',
+                        lg: 'var(--radius)',
+                        xl: 'calc(var(--radius) * 1.4)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #ffffff;
+            --foreground: #1c1917;
+            --card: #ffffff;
+            --card-foreground: #1c1917;
+            --primary: #2563eb;
+            --primary-foreground: #ffffff;
+            --primary-strong: #1d4ed8;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #0f172a;
+            --muted: #f1f5f9;
+            --muted-foreground: #64748b;
+            --accent: #f8fafc;
+            --accent-foreground: #0f172a;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --success: #22c55e;
+            --success-foreground: #ffffff;
+            --warning: #f59e0b;
+            --warning-foreground: #ffffff;
+            --info: #0ea5e9;
+            --info-foreground: #ffffff;
+            --border: #e2e8f0;
+            --input: #e2e8f0;
+            --ring: #2563eb;
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: #09090b;
+            --foreground: #fafafa;
+            --card: #121215;
+            --card-foreground: #fafafa;
+            --primary: #3b82f6;
+            --primary-foreground: #09090b;
+            --primary-strong: #2563eb;
+            --secondary: #27272a;
+            --secondary-foreground: #fafafa;
+            --muted: #27272a;
+            --muted-foreground: #a1a1aa;
+            --accent: #27272a;
+            --accent-foreground: #fafafa;
+            --destructive: #ef4444;
+            --destructive-foreground: #fafafa;
+            --success: #22c55e;
+            --success-foreground: #fafafa;
+            --warning: #f59e0b;
+            --warning-foreground: #fafafa;
+            --info: #0ea5e9;
+            --info-foreground: #fafafa;
+            --border: rgba(255, 255, 255, 0.08);
+            --input: rgba(255, 255, 255, 0.12);
+            --ring: #3b82f6;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favoicon.svg">
+</head>
+<body class="bg-background text-foreground min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center pb-8 border-b border-border gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden shadow-sm">
+                    <img src="assets/icon.png" alt="Kalender Bali API Logo" class="w-full h-full object-contain p-1">
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground" data-i18n="title">
+                        Kalender Bali API
+                    </h1>
+                    <p class="text-sm text-muted-foreground" data-i18n="subtitle">High-performance REST API untuk Libur Nasional & Kalender Bali (ElysiaJS & Bun)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 text-xs flex-wrap gap-2">
+                <!-- Language Selector Dropdown -->
+                <div class="relative">
+                    <select id="langSelect" class="bg-card border border-border text-foreground text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring transition cursor-pointer font-medium">
+                        <option value="id">🇮🇩 ID (Indonesia)</option>
+                        <option value="en">🇬🇧 EN (English)</option>
+                    </select>
+                </div>
+                <span class="px-3 py-1.5 rounded-lg bg-card border border-border text-foreground font-medium flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-success"></span>
+                    <span data-i18n="vercel_ready">Vercel Ready</span>
+                </span>
+                <span class="px-3 py-1.5 rounded-lg bg-card border border-border text-muted-foreground font-medium" data-i18n="rate_limit">
+                    Rate Limit: 120 req/min
+                </span>
+                <span class="px-3 py-1.5 rounded-lg bg-card border border-border text-foreground font-mono">
+                    v1.0.50
+                </span>
+            </div>
+        </header>
+
+        <!-- Hero Intro -->
+        <section class="my-10 bg-card border border-border rounded-xl p-8 shadow-sm">
+            <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-book text-muted-foreground"></i>
+                <span data-i18n="about_title">Tentang API & Penggunaan Dasar</span>
+            </h2>
+            <p class="text-muted-foreground text-sm leading-relaxed mb-6" data-i18n="about_desc">
+                Kalender Bali API adalah layanan backend modular berbasis TypeScript yang menghitung penanggalan tradisional Bali (Wewaran, Pawukon, Sasih, Rahinan, Otonan, Odalan, Dewasa Ayu, Upacara Besar) serta Hari Libur Nasional Indonesia secara akurat.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+                <div class="bg-background p-4 rounded-lg border border-border">
+                    <span class="text-muted-foreground block mb-1" data-i18n="base_url">Base URL</span>
+                    <span class="text-foreground font-semibold">/api/...</span>
+                </div>
+                <div class="bg-background p-4 rounded-lg border border-border">
+                    <span class="text-muted-foreground block mb-1" data-i18n="date_format">Format Tanggal</span>
+                    <span class="text-foreground font-semibold">YYYY-MM-DD (e.g. 2026-03-19)</span>
+                </div>
+                <div class="bg-background p-4 rounded-lg border border-border">
+                    <span class="text-muted-foreground block mb-1" data-i18n="rate_headers">Rate Limit Headers</span>
+                    <span class="text-foreground font-semibold">x-ratelimit-*</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Endpoints Documentation Grid -->
+        <main class="space-y-8">
+            
+            <!-- 1. Kalender Bulanan -->
+            <section class="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-muted-foreground"></i>
+                        <span data-i18n="sec1_title">1. Kalender Bulanan</span>
+                    </h3>
+                    <span class="px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border">GET /api/calendar</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-4" data-i18n="sec1_desc">Mengambil data kalender komprehensif (libur nasional & rahinan bali) untuk satu bulan penuh.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2" data-i18n="query_params">Query Parameters</h4>
+                        <ul class="space-y-1.5 text-xs text-muted-foreground">
+                            <li><code class="text-foreground font-mono">year</code> (number): Tahun Masehi (contoh: 2026)</li>
+                            <li><code class="text-foreground font-mono">month</code> (number): Bulan 1-12 (contoh: 3)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2" data-i18n="example_request">Contoh Request (cURL)</h4>
+                        <div class="bg-background p-3 rounded-lg border border-border font-mono text-xs text-muted-foreground overflow-x-auto">
+                            curl -i "https://your-domain.vercel.app/api/calendar?year=2026&month=3"
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Rahinan Bali -->
+            <section class="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <i class="fa-solid fa-sun text-muted-foreground"></i>
+                        <span data-i18n="sec2_title">2. Rahinan Bali</span>
+                    </h3>
+                    <span class="px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border">GET /api/rahinan</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-4" data-i18n="sec2_desc">Mengecek rahinan (Purnama, Tilem, Kajeng Kliwon, Tumpek, Buda Keliwon, dll) pada tanggal tertentu atau rentang tanggal.</p>
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-background p-4 rounded-lg border border-border">
+                            <span class="text-xs font-semibold text-foreground block mb-1" data-i18n="check_date">Cek Per Tanggal</span>
+                            <code class="text-xs font-mono text-muted-foreground block mb-2">GET /api/rahinan?date=2026-03-19</code>
+                            <span class="text-xs text-muted-foreground" data-i18n="param_date">Parameter: date (YYYY-MM-DD)</span>
+                        </div>
+                        <div class="bg-background p-4 rounded-lg border border-border">
+                            <span class="text-xs font-semibold text-foreground block mb-1" data-i18n="check_range">Cek Rentang Tanggal</span>
+                            <code class="text-xs font-mono text-muted-foreground block mb-2">GET /api/rahinan/range?start=2026-03-01&end=2026-03-31</code>
+                            <span class="text-xs text-muted-foreground" data-i18n="param_range">Parameter: start, end</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Libur Nasional -->
+            <section class="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <i class="fa-solid fa-umbrella-beach text-muted-foreground"></i>
+                        <span data-i18n="sec3_title">3. Libur Nasional & Cuti Bersama</span>
+                    </h3>
+                    <span class="px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border">GET /api/libur-nasional</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-4" data-i18n="sec3_desc">Informasi hari libur nasional Indonesia, cuti bersama, pengecekan tanggal merah, dan perhitungan hari kerja (workdays).</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/libur-nasional</span>
+                        <span class="text-muted-foreground" data-i18n="sec3_item1">?year=2026 (Daftar libur setahun)</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/libur-nasional/check</span>
+                        <span class="text-muted-foreground" data-i18n="sec3_item2">?date=2026-03-19 (Cek libur)</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/libur-nasional/next</span>
+                        <span class="text-muted-foreground" data-i18n="sec3_item3">?from=2026-03-01 (Libur terdekat)</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/libur-nasional/workdays</span>
+                        <span class="text-muted-foreground" data-i18n="sec3_item4">?start=...&end=... (Hitung hari kerja)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Otonan -->
+            <section class="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <i class="fa-solid fa-baby text-muted-foreground"></i>
+                        <span data-i18n="sec4_title">4. Otonan (Weton 210 Hari)</span>
+                    </h3>
+                    <span class="px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border">GET /api/otonan</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-4" data-i18n="sec4_desc">Menghitung jadwal otonan berdasarkan hari lahir Masehi (siklus 210 hari Pawukon).</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/otonan</span>
+                        <span class="text-muted-foreground" data-i18n="sec4_item1">?birth=2004-07-05&count=6</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/otonan/next</span>
+                        <span class="text-muted-foreground" data-i18n="sec4_item2">?birth=2004-07-05 (Otonan terdekat)</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/otonan/check</span>
+                        <span class="text-muted-foreground" data-i18n="sec4_item3">?birth=...&date=... (Cek hari otonan)</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/otonan/year</span>
+                        <span class="text-muted-foreground" data-i18n="sec4_item4">?birth=...&year=2026 (Otonan tahun ini)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Dewasa Ayu -->
+            <section class="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-muted-foreground"></i>
+                        <span data-i18n="sec5_title">5. Dewasa Ayu (Hari Baik)</span>
+                    </h3>
+                    <span class="px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border">GET /api/dewasa-ayu</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-4" data-i18n="sec5_desc">Pencarian hari baik (dewasa ayu) untuk berbagai keperluan upacara, pernikahan, ngaben, membangun rumah, dll.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/dewasa-ayu</span>
+                        <span class="text-muted-foreground" data-i18n="sec5_item1">?date=2026-03-19&konteks=umum</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/dewasa-ayu/best</span>
+                        <span class="text-muted-foreground" data-i18n="sec5_item2">?start=...&end=...&konteks=pernikahan&topN=5</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/dewasa-ayu/next</span>
+                        <span class="text-muted-foreground" data-i18n="sec5_item3">?from=...&days=30&konteks=ngaben</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Odalan & Upacara Besar -->
+            <section class="bg-card border border-border rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <i class="fa-solid fa-place-of-worship text-muted-foreground"></i>
+                        <span data-i18n="sec6_title">6. Odalan & Upacara Besar</span>
+                    </h3>
+                    <span class="px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border">GET /api/odalan</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-4" data-i18n="sec6_desc">Jadwal odalan pura (berdasarkan wuku atau sasih) serta ringkasan karya agung dan upacara besar Hindu Bali.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/odalan/presets</span>
+                        <span class="text-muted-foreground" data-i18n="sec6_item1">Daftar preset pura terkenal</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/odalan</span>
+                        <span class="text-muted-foreground" data-i18n="sec6_item2">?id=pura_besakih_purnama_kadasa</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/upacara-besar/ringkasan</span>
+                        <span class="text-muted-foreground" data-i18n="sec6_item3">?from=2026-01-01</span>
+                    </div>
+                    <div class="bg-background p-3 rounded-lg border border-border">
+                        <span class="text-foreground font-mono font-semibold block mb-1">/api/meta</span>
+                        <span class="text-muted-foreground" data-i18n="sec6_item4">Metadata lengkap daftar endpoint</span>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-6 border-t border-border text-center text-xs text-muted-foreground">
+            <p data-i18n="footer">Kalender Bali API &copy; 2026 &bull; Dibangun dengan ElysiaJS & Bun &bull; Siap deploy di Vercel</p>
+        </footer>
+    </div>
+
+    <!-- Translation Script -->
+    <script>
+        const translations = {
+            id: {
+                title: "Kalender Bali API",
+                subtitle: "High-performance REST API untuk Libur Nasional & Kalender Bali (ElysiaJS & Bun)",
+                vercel_ready: "Vercel Ready",
+                rate_limit: "Rate Limit: 120 req/min",
+                about_title: "Tentang API & Penggunaan Dasar",
+                about_desc: "Kalender Bali API adalah layanan backend modular berbasis TypeScript yang menghitung penanggalan tradisional Bali (Wewaran, Pawukon, Sasih, Rahinan, Otonan, Odalan, Dewasa Ayu, Upacara Besar) serta Hari Libur Nasional Indonesia secara akurat.",
+                base_url: "Base URL",
+                date_format: "Format Tanggal",
+                rate_headers: "Rate Limit Headers",
+                
+                sec1_title: "1. Kalender Bulanan",
+                sec1_desc: "Mengambil data kalender komprehensif (libur nasional & rahinan bali) untuk satu bulan penuh.",
+                query_params: "Query Parameters",
+                example_request: "Contoh Request (cURL)",
+
+                sec2_title: "2. Rahinan Bali",
+                sec2_desc: "Mengecek rahinan (Purnama, Tilem, Kajeng Kliwon, Tumpek, Buda Keliwon, dll) pada tanggal tertentu atau rentang tanggal.",
+                check_date: "Cek Per Tanggal",
+                check_range: "Cek Rentang Tanggal",
+                param_date: "Parameter: date (YYYY-MM-DD)",
+                param_range: "Parameter: start, end",
+
+                sec3_title: "3. Libur Nasional & Cuti Bersama",
+                sec3_desc: "Informasi hari libur nasional Indonesia, cuti bersama, pengecekan tanggal merah, dan perhitungan hari kerja (workdays).",
+                sec3_item1: "?year=2026 (Daftar libur setahun)",
+                sec3_item2: "?date=2026-03-19 (Cek libur)",
+                sec3_item3: "?from=2026-03-01 (Libur terdekat)",
+                sec3_item4: "?start=...&end=... (Hitung hari kerja)",
+
+                sec4_title: "4. Otonan (Weton 210 Hari)",
+                sec4_desc: "Menghitung jadwal otonan berdasarkan hari lahir Masehi (siklus 210 hari Pawukon).",
+                sec4_item1: "?birth=2004-07-05&count=6",
+                sec4_item2: "?birth=2004-07-05 (Otonan terdekat)",
+                sec4_item3: "?birth=...&date=... (Cek hari otonan)",
+                sec4_item4: "?birth=...&year=2026 (Otonan tahun ini)",
+
+                sec5_title: "5. Dewasa Ayu (Hari Baik)",
+                sec5_desc: "Pencarian hari baik (dewasa ayu) untuk berbagai keperluan upacara, pernikahan, ngaben, membangun rumah, dll.",
+                sec5_item1: "?date=2026-03-19&konteks=umum",
+                sec5_item2: "?start=...&end=...&konteks=pernikahan&topN=5",
+                sec5_item3: "?from=...&days=30&konteks=ngaben",
+
+                sec6_title: "6. Odalan & Upacara Besar",
+                sec6_desc: "Jadwal odalan pura (berdasarkan wuku atau sasih) serta ringkasan karya agung dan upacara besar Hindu Bali.",
+                sec6_item1: "Daftar preset pura terkenal",
+                sec6_item2: "?id=pura_besakih_purnama_kadasa",
+                sec6_item3: "?from=2026-01-01",
+                sec6_item4: "Metadata lengkap daftar endpoint",
+
+                footer: "Kalender Bali API &copy; 2026 &bull; Dibangun dengan ElysiaJS & Bun &bull; Siap deploy di Vercel"
+            },
+            en: {
+                title: "Bali Calendar API",
+                subtitle: "High-performance REST API for National Holidays & Bali Calendar (ElysiaJS & Bun)",
+                vercel_ready: "Vercel Ready",
+                rate_limit: "Rate Limit: 120 req/min",
+                about_title: "About API & Basic Usage",
+                about_desc: "Bali Calendar API is a modular TypeScript-based backend service that accurately calculates traditional Balinese calendar systems (Wewaran, Pawukon, Sasih, Rahinan, Otonan, Odalan, Dewasa Ayu, Major Ceremonies) as well as Indonesian National Holidays.",
+                base_url: "Base URL",
+                date_format: "Date Format",
+                rate_headers: "Rate Limit Headers",
+                
+                sec1_title: "1. Monthly Calendar",
+                sec1_desc: "Retrieves comprehensive calendar data (national holidays & bali rahinan) for a full month.",
+                query_params: "Query Parameters",
+                example_request: "Example Request (cURL)",
+
+                sec2_title: "2. Bali Rahinan",
+                sec2_desc: "Checks rahinan (Purnama, Tilem, Kajeng Kliwon, Tumpek, Buda Keliwon, etc.) for a specific date or date range.",
+                check_date: "Check by Date",
+                check_range: "Check Date Range",
+                param_date: "Parameter: date (YYYY-MM-DD)",
+                param_range: "Parameters: start, end",
+
+                sec3_title: "3. National Holidays & Joint Leave",
+                sec3_desc: "Information on Indonesian national holidays, joint leave (cuti bersama), holiday checks, and workday calculations.",
+                sec3_item1: "?year=2026 (Annual holidays list)",
+                sec3_item2: "?date=2026-03-19 (Check holiday)",
+                sec3_item3: "?from=2026-03-01 (Nearest upcoming holiday)",
+                sec3_item4: "?start=...&end=... (Calculate workdays)",
+
+                sec4_title: "4. Otonan (210-Day Weton)",
+                sec4_desc: "Calculates otonan schedules based on Gregorian birth date (210-day Pawukon cycle).",
+                sec4_item1: "?birth=2004-07-05&count=6",
+                sec4_item2: "?birth=2004-07-05 (Nearest otonan)",
+                sec4_item3: "?birth=...&date=... (Check otonan day)",
+                sec4_item4: "?birth=...&year=2026 (Otonan this year)",
+
+                sec5_title: "5. Dewasa Ayu (Auspicious Days)",
+                sec5_desc: "Search for auspicious days (dewasa ayu) for various ceremonies, weddings, ngaben, house building, etc.",
+                sec5_item1: "?date=2026-03-19&konteks=umum",
+                sec5_item2: "?start=...&end=...&konteks=pernikahan&topN=5",
+                sec5_item3: "?from=...&days=30&konteks=ngaben",
+
+                sec6_title: "6. Odalan & Major Ceremonies",
+                sec6_desc: "Temple odalan schedules (based on wuku or sasih) and summaries of grand ceremonies (karya agung) in Bali.",
+                sec6_item1: "List of famous temple presets",
+                sec6_item2: "?id=pura_besakih_purnama_kadasa",
+                sec6_item3: "?from=2026-01-01",
+                sec6_item4: "Complete endpoint metadata",
+
+                footer: "Bali Calendar API &copy; 2026 &bull; Built with ElysiaJS & Bun &bull; Ready for Vercel Deployment"
+            }
+        };
+
+        function setLanguage(lang) {
+            const dict = translations[lang] || translations.id;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.innerHTML = dict[key];
+                }
+            });
+            const titleEl = document.querySelector('[data-i18n-title]');
+            if (titleEl && dict.title) {
+                document.title = dict.title + " - Dokumentasi & Panduan Penggunaan";
+            }
+            localStorage.setItem('api_lang', lang);
+        }
+
+        const langSelect = document.getElementById('langSelect');
+        const savedLang = localStorage.getItem('api_lang') || 'id';
+        langSelect.value = savedLang;
+        setLanguage(savedLang);
+
+        langSelect.addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+        });
+    </script>
+</body>
+</html>
