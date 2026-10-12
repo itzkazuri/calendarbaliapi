@@ -164,6 +164,36 @@ export const indexHtml = `<!DOCTYPE html>
   .j-k { color: var(--j-key); } .j-s { color: var(--j-str); } .j-n { color: var(--j-num); } .j-b { color: var(--j-bool); } .j-z { color: var(--j-null); }
   .t-c { color: var(--muted); font-style: italic; } .t-s { color: var(--j-str); } .t-k { color: var(--j-bool); } .t-n { color: var(--j-num); } .t-b { color: var(--j-key); }
 
+  /* Rate Limit Alert & Badges */
+  .rl-alert {
+    display: none;
+    margin: 10px 10px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(178, 65, 43, 0.08);
+    border: 1px solid var(--err);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  [data-theme="dark"] .rl-alert {
+    background: rgba(220, 80, 50, 0.12);
+  }
+  .rl-alert.active { display: flex; gap: 10px; align-items: flex-start; }
+  .rl-alert-icon { font-size: 18px; line-height: 1.2; flex-shrink: 0; }
+  .rl-alert-body { flex: 1; min-width: 0; }
+  .rl-alert-title { font-weight: 600; color: var(--err); display: flex; align-items: center; gap: 6px; }
+  .rl-alert-msg { margin: 2px 0 6px; color: var(--muted); font-size: 12.5px; }
+  .rl-cooldown-bar {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); padding: 3px 8px; border-radius: 4px;
+    font: 500 12px var(--font-mono); border: 1px solid var(--line);
+  }
+  .rl-cooldown-bar b { color: var(--err); }
+  .rl-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; padding: 2px 7px; border-radius: 4px; }
+  .rl-badge.warn { background: rgba(217, 154, 0, 0.15); color: var(--mark); border: 1px solid var(--mark); }
+  .rl-badge.danger { background: rgba(178, 65, 43, 0.15); color: var(--err); border: 1px solid var(--err); }
+
   /* Sections */
   section.grp { padding-top: 56px; scroll-margin-top: 72px; }
   h2 {
@@ -288,13 +318,18 @@ export const indexHtml = `<!DOCTYPE html>
       startTitle: 'Mulai cepat',
       startText: 'Semua endpoint memakai metode GET dan mengembalikan JSON. Contoh memakai TypeScript (fetch bawaan browser, Node 18+, dan Bun) serta curl. Tidak ada langkah setup: salin dan jalankan.',
       fBase: 'Base URL', fMethod: 'Metode', fMethodV: 'GET, respons dalam JSON', fDate: 'Format tanggal', fDateV: 'YYYY-MM-DD, contoh <code>2026-03-19</code>',
-      fLimit: 'Batas request', fLimitV: '120 request per 60 detik untuk tiap IP',
+      fLimit: 'Batas request', fLimitV: '60 request per 60 detik untuk tiap IP',
       rlTitle: 'Rate limiting',
-      rlText: 'Batas bawaan adalah 120 request per 60 detik untuk setiap IP. Setiap respons membawa tiga header untuk memantau kuota Anda.',
+      rlText: 'Batas bawaan adalah 60 request per 60 detik untuk setiap IP. Setiap respons membawa tiga header untuk memantau kuota Anda.',
       rlLimit: 'Jumlah maksimum request dalam satu jendela waktu.',
       rlRemaining: 'Sisa request yang masih boleh dikirim pada jendela saat ini.',
       rlReset: 'Penanda kapan jendela waktu dihitung ulang.',
       rlAfter: 'Jika batas terlampaui, server menolak request sampai jendela direset. Baca <code>x-ratelimit-remaining</code> di klien Anda dan beri jeda sebelum mencapai nol.',
+      rlExceeded: 'Batas Request Terlampaui (HTTP 429)',
+      rlExceededMsg: 'Anda telah mencapai batas maksimum request. Silakan tunggu cooldown sebelum mengirim request lagi.',
+      rlCooldown: 'Cooldown aktif: coba lagi dalam',
+      rlReady: 'Cooldown selesai. Silakan coba lagi.',
+      rlWait: 'Tunggu',
       notesTitle: 'Catatan',
       notes: [
         'Odalan dan Upacara Besar dihitung dengan kaidah kalender baku. Jadwal yang sebenarnya ditetapkan oleh otoritas pura atau desa adat setempat.',
@@ -316,13 +351,18 @@ export const indexHtml = `<!DOCTYPE html>
       startTitle: 'Quick start',
       startText: 'Every endpoint uses GET and returns JSON. Examples use TypeScript (fetch is built into browsers, Node 18+, and Bun) and curl. There is no setup step: copy and run.',
       fBase: 'Base URL', fMethod: 'Method', fMethodV: 'GET, JSON responses', fDate: 'Date format', fDateV: 'YYYY-MM-DD, for example <code>2026-03-19</code>',
-      fLimit: 'Request limit', fLimitV: '120 requests per 60 seconds per IP',
+      fLimit: 'Request limit', fLimitV: '60 requests per 60 seconds per IP',
       rlTitle: 'Rate limiting',
-      rlText: 'The default limit is 120 requests per 60 seconds for each IP. Every response carries three headers so you can track your quota.',
+      rlText: 'The default limit is 60 requests per 60 seconds for each IP. Every response carries three headers so you can track your quota.',
       rlLimit: 'Maximum number of requests in one time window.',
       rlRemaining: 'Requests still allowed in the current window.',
       rlReset: 'Indicates when the time window is recalculated.',
       rlAfter: 'Once the limit is exceeded, the server rejects requests until the window resets. Read <code>x-ratelimit-remaining</code> in your client and back off before it reaches zero.',
+      rlExceeded: 'Rate Limit Exceeded (HTTP 429)',
+      rlExceededMsg: 'You have exceeded the maximum request limit. Please wait for the cooldown before sending more requests.',
+      rlCooldown: 'Cooldown active: retry in',
+      rlReady: 'Cooldown finished. You can try again.',
+      rlWait: 'Wait',
       notesTitle: 'Notes',
       notes: [
         'Odalan and Major Ceremonies are calculated with standard calendar rules. Actual schedules are decided by the local temple or village authorities.',
@@ -540,6 +580,7 @@ export const indexHtml = `<!DOCTYPE html>
       '<div class="try-bar"><span class="try-verb">GET</span>' +
       '<input class="try-input" value="' + esc(path) + '" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="URL">' +
       '<button class="btn primary" data-send="' + id + '"><i data-lucide="play"></i><span>' + esc(u.send) + '</span></button></div>' +
+      '<div class="rl-alert" role="alert" aria-live="assertive"></div>' +
       '<div class="try-meta" aria-live="polite"></div>' +
       '<pre class="try-out"><code></code></pre></div>';
   }
@@ -676,6 +717,8 @@ export const indexHtml = `<!DOCTYPE html>
   }
 
   /* ---------- Request ---------- */
+  var rlTimers = {};
+
   function send(id) {
     var root = document.getElementById(id);
     if (!root) return;
@@ -683,8 +726,16 @@ export const indexHtml = `<!DOCTYPE html>
     var input = $('.try-input', root);
     var meta = $('.try-meta', root);
     var out = $('.try-out code', root);
+    var alertEl = $('.rl-alert', root);
+    var sendBtn = $('[data-send]', root);
     var path = input.value.trim();
     if (path.charAt(0) !== '/') path = '/' + path;
+
+    // Reset alert jika ada
+    if (alertEl && !alertEl.dataset.holding) {
+      alertEl.classList.remove('active');
+      alertEl.innerHTML = '';
+    }
 
     meta.textContent = u.loading;
     var t0 = performance.now();
@@ -693,16 +744,91 @@ export const indexHtml = `<!DOCTYPE html>
       var ms = Math.round(performance.now() - t0);
       var limit = res.headers.get('x-ratelimit-limit');
       var left = res.headers.get('x-ratelimit-remaining');
+      var retryAfterHdr = res.headers.get('retry-after');
+
       return res.text().then(function (text) {
-        var shown = text, big = false;
-        try { shown = JSON.stringify(JSON.parse(text), null, 2); } catch (e) {}
+        var shown = text, big = false, parsed = null;
+        try {
+          parsed = JSON.parse(text);
+          shown = JSON.stringify(parsed, null, 2);
+        } catch (e) {}
+
         if (shown.length > 30000) { shown = shown.slice(0, 30000); big = true; }
         out.innerHTML = highlight(shown);
+
         var m = '<span class="st ' + (res.ok ? 'ok' : 'err') + '">' + res.status + ' ' + esc(res.statusText) + '</span>' +
           '<span>' + ms + ' ms</span><span>' + (new Blob([text]).size / 1024).toFixed(1) + ' KB</span>';
-        if (left !== null && limit !== null) m += '<span>' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+
+        if (left !== null && limit !== null) {
+          var leftNum = parseInt(left, 10);
+          if (leftNum === 0 || res.status === 429) {
+            m += '<span class="rl-badge danger">⚠️ ' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+          } else if (leftNum <= 5) {
+            m += '<span class="rl-badge warn">⚠️ ' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+          } else {
+            m += '<span>' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+          }
+        }
         if (big) m += '<span>' + esc(u.truncated) + '</span>';
         meta.innerHTML = m;
+
+        // Rate Limit Handling (HTTP 429)
+        if (res.status === 429 && alertEl) {
+          var seconds = 60;
+          if (retryAfterHdr) {
+            seconds = parseInt(retryAfterHdr, 10) || 60;
+          } else if (parsed && parsed.retryAfter) {
+            seconds = parseInt(parsed.retryAfter, 10) || 60;
+          }
+
+          var detailMsg = (parsed && parsed.message) ? esc(parsed.message) : esc(u.rlExceededMsg);
+
+          var renderAlert = function (rem) {
+            if (rem <= 0) {
+              alertEl.innerHTML = '<div class="rl-alert-icon">✅</div><div class="rl-alert-body"><div class="rl-alert-title" style="color:var(--ok)">' + esc(u.rlReady) + '</div></div>';
+              delete alertEl.dataset.holding;
+              if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i data-lucide="play"></i><span>' + esc(u.send) + '</span>';
+                lucide.createIcons();
+              }
+              setTimeout(function () {
+                alertEl.classList.remove('active');
+                alertEl.innerHTML = '';
+              }, 4000);
+              return;
+            }
+
+            alertEl.innerHTML =
+              '<div class="rl-alert-icon">⚠️</div>' +
+              '<div class="rl-alert-body">' +
+              '<div class="rl-alert-title">' + esc(u.rlExceeded) + '</div>' +
+              '<div class="rl-alert-msg">' + detailMsg + '</div>' +
+              '<div class="rl-cooldown-bar">' + esc(u.rlCooldown) + ' <b class="rl-cd-sec">' + rem + 's</b></div>' +
+              '</div>';
+
+            if (sendBtn) {
+              sendBtn.disabled = true;
+              sendBtn.innerHTML = '<i data-lucide="clock"></i><span>' + esc(u.rlWait) + ' (' + rem + 's)</span>';
+              lucide.createIcons();
+            }
+          };
+
+          alertEl.classList.add('active');
+          alertEl.dataset.holding = 'true';
+          renderAlert(seconds);
+
+          var cd = seconds;
+          clearInterval(rlTimers[id]);
+          rlTimers[id] = setInterval(function () {
+            cd--;
+            if (cd <= 0) {
+              clearInterval(rlTimers[id]);
+              delete rlTimers[id];
+            }
+            renderAlert(cd);
+          }, 1000);
+        }
       });
     }).catch(function () {
       out.textContent = '';

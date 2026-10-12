@@ -162,6 +162,37 @@
   .st.err { color: var(--err); }
   .try-out { margin: 0; padding: 12px 14px; max-height: 380px; overflow: auto; background: var(--code-bg); font-size: 13px; line-height: 1.55; white-space: pre; }
   .j-k { color: var(--j-key); } .j-s { color: var(--j-str); } .j-n { color: var(--j-num); } .j-b { color: var(--j-bool); } .j-z { color: var(--j-null); }
+  .t-c { color: var(--muted); font-style: italic; } .t-s { color: var(--j-str); } .t-k { color: var(--j-bool); } .t-n { color: var(--j-num); } .t-b { color: var(--j-key); }
+
+  /* Rate Limit Alert & Badges */
+  .rl-alert {
+    display: none;
+    margin: 10px 10px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(178, 65, 43, 0.08);
+    border: 1px solid var(--err);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  [data-theme="dark"] .rl-alert {
+    background: rgba(220, 80, 50, 0.12);
+  }
+  .rl-alert.active { display: flex; gap: 10px; align-items: flex-start; }
+  .rl-alert-icon { font-size: 18px; line-height: 1.2; flex-shrink: 0; }
+  .rl-alert-body { flex: 1; min-width: 0; }
+  .rl-alert-title { font-weight: 600; color: var(--err); display: flex; align-items: center; gap: 6px; }
+  .rl-alert-msg { margin: 2px 0 6px; color: var(--muted); font-size: 12.5px; }
+  .rl-cooldown-bar {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); padding: 3px 8px; border-radius: 4px;
+    font: 500 12px var(--font-mono); border: 1px solid var(--line);
+  }
+  .rl-cooldown-bar b { color: var(--err); }
+  .rl-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; padding: 2px 7px; border-radius: 4px; }
+  .rl-badge.warn { background: rgba(217, 154, 0, 0.15); color: var(--mark); border: 1px solid var(--mark); }
+  .rl-badge.danger { background: rgba(178, 65, 43, 0.15); color: var(--err); border: 1px solid var(--err); }
 
   /* Sections */
   section.grp { padding-top: 56px; scroll-margin-top: 72px; }
@@ -202,6 +233,7 @@
   .tab { font: 500 13px var(--font-body); background: none; border: 0; border-bottom: 2px solid transparent; padding: 6px 12px; margin-bottom: -1px; color: var(--muted); cursor: pointer; }
   .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--mark); }
   .tabpanel[hidden] { display: none; }
+  .ep .tabs { margin-top: 14px; }
   .tabpanel .codeblock { margin-top: 0; }
 
   dl.facts { margin: 18px 0 0; border-top: 1px solid var(--line); }
@@ -260,6 +292,8 @@
 
   /* ---------- Konfigurasi ---------- */
   var PROD = 'https://calendarbaliapi.vercel.app';
+  /* Di Vercel (domain produksi, preview, atau custom) request memakai origin yang sama,
+     jadi tombol Coba selalu memanggil deployment yang sedang dibuka. Fallback ke PROD hanya untuk file://. */
   var BASE = (location.protocol === 'file:' || !location.host) ? PROD : location.origin;
 
   var pad = function (n) { return String(n).padStart(2, '0'); };
@@ -282,15 +316,20 @@
       params: 'Parameter', noParams: 'Tanpa parameter', required: 'wajib', optional: 'opsional', example: 'Contoh',
       remaining: 'sisa kuota',
       startTitle: 'Mulai cepat',
-      startText: 'Semua endpoint memakai metode GET dan mengembalikan JSON. Tidak ada langkah setup: salin contoh di bawah dan jalankan.',
+      startText: 'Semua endpoint memakai metode GET dan mengembalikan JSON. Contoh memakai TypeScript (fetch bawaan browser, Node 18+, dan Bun) serta curl. Tidak ada langkah setup: salin dan jalankan.',
       fBase: 'Base URL', fMethod: 'Metode', fMethodV: 'GET, respons dalam JSON', fDate: 'Format tanggal', fDateV: 'YYYY-MM-DD, contoh <code>2026-03-19</code>',
-      fLimit: 'Batas request', fLimitV: '120 request per 60 detik untuk tiap IP',
+      fLimit: 'Batas request', fLimitV: '60 request per 60 detik untuk tiap IP',
       rlTitle: 'Rate limiting',
-      rlText: 'Batas bawaan adalah 120 request per 60 detik untuk setiap IP. Setiap respons membawa tiga header untuk memantau kuota Anda.',
+      rlText: 'Batas bawaan adalah 60 request per 60 detik untuk setiap IP. Setiap respons membawa tiga header untuk memantau kuota Anda.',
       rlLimit: 'Jumlah maksimum request dalam satu jendela waktu.',
       rlRemaining: 'Sisa request yang masih boleh dikirim pada jendela saat ini.',
       rlReset: 'Penanda kapan jendela waktu dihitung ulang.',
       rlAfter: 'Jika batas terlampaui, server menolak request sampai jendela direset. Baca <code>x-ratelimit-remaining</code> di klien Anda dan beri jeda sebelum mencapai nol.',
+      rlExceeded: 'Batas Request Terlampaui (HTTP 429)',
+      rlExceededMsg: 'Anda telah mencapai batas maksimum request. Silakan tunggu cooldown sebelum mengirim request lagi.',
+      rlCooldown: 'Cooldown aktif: coba lagi dalam',
+      rlReady: 'Cooldown selesai. Silakan coba lagi.',
+      rlWait: 'Tunggu',
       notesTitle: 'Catatan',
       notes: [
         'Odalan dan Upacara Besar dihitung dengan kaidah kalender baku. Jadwal yang sebenarnya ditetapkan oleh otoritas pura atau desa adat setempat.',
@@ -310,15 +349,20 @@
       params: 'Parameters', noParams: 'No parameters', required: 'required', optional: 'optional', example: 'Example',
       remaining: 'quota left',
       startTitle: 'Quick start',
-      startText: 'Every endpoint uses GET and returns JSON. There is no setup step: copy an example below and run it.',
+      startText: 'Every endpoint uses GET and returns JSON. Examples use TypeScript (fetch is built into browsers, Node 18+, and Bun) and curl. There is no setup step: copy and run.',
       fBase: 'Base URL', fMethod: 'Method', fMethodV: 'GET, JSON responses', fDate: 'Date format', fDateV: 'YYYY-MM-DD, for example <code>2026-03-19</code>',
-      fLimit: 'Request limit', fLimitV: '120 requests per 60 seconds per IP',
+      fLimit: 'Request limit', fLimitV: '60 requests per 60 seconds per IP',
       rlTitle: 'Rate limiting',
-      rlText: 'The default limit is 120 requests per 60 seconds for each IP. Every response carries three headers so you can track your quota.',
+      rlText: 'The default limit is 60 requests per 60 seconds for each IP. Every response carries three headers so you can track your quota.',
       rlLimit: 'Maximum number of requests in one time window.',
       rlRemaining: 'Requests still allowed in the current window.',
       rlReset: 'Indicates when the time window is recalculated.',
       rlAfter: 'Once the limit is exceeded, the server rejects requests until the window resets. Read <code>x-ratelimit-remaining</code> in your client and back off before it reaches zero.',
+      rlExceeded: 'Rate Limit Exceeded (HTTP 429)',
+      rlExceededMsg: 'You have exceeded the maximum request limit. Please wait for the cooldown before sending more requests.',
+      rlCooldown: 'Cooldown active: retry in',
+      rlReady: 'Cooldown finished. You can try again.',
+      rlWait: 'Wait',
       notesTitle: 'Notes',
       notes: [
         'Odalan and Major Ceremonies are calculated with standard calendar rules. Actual schedules are decided by the local temple or village authorities.',
@@ -338,23 +382,23 @@
 
   var GROUPS = [
     {
-      id: 'libur-nasional', icon: 'tree-palm',
+      id: 'national-holidays', icon: 'tree-palm',
       title: { id: 'Libur nasional', en: 'National holidays' },
       desc: { id: 'Hari libur nasional dan cuti bersama Indonesia, termasuk pengecekan tanggal merah dan penghitungan hari kerja.', en: 'Indonesian national holidays and joint leave, including red-date checks and workday counting.' },
       eps: [
-        ep('libur-setahun', '/api/libur-nasional?year=2026', ['Daftar libur setahun', 'Holidays in a year'],
+        ep('holidays-by-year', '/api/libur-nasional?year=2026', ['Daftar libur setahun', 'Holidays in a year'],
           ['Mengembalikan libur nasional dan cuti bersama untuk satu tahun.', 'Returns national holidays and joint leave for one year.'],
           [q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026')]),
-        ep('libur-per-kategori', '/api/libur-nasional/per-kategori?year=2026', ['Libur per kategori', 'Holidays by category'],
+        ep('holidays-by-category', '/api/libur-nasional/per-kategori?year=2026', ['Libur per kategori', 'Holidays by category'],
           ['Libur setahun yang dikelompokkan menurut kategorinya.', 'A year of holidays grouped by category.'],
           [q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026')]),
-        ep('libur-cek', '/api/libur-nasional/check?date=2026-03-19', ['Cek satu tanggal', 'Check a date'],
+        ep('check-holiday', '/api/libur-nasional/check?date=2026-03-19', ['Cek satu tanggal', 'Check a date'],
           ['Memeriksa apakah sebuah tanggal adalah hari libur.', 'Checks whether a date is a holiday.'],
           [q('date', 'date', true, 'Tanggal yang diperiksa.', 'The date to check.', '2026-03-19')]),
-        ep('libur-berikutnya', '/api/libur-nasional/next?from=2026-03-01', ['Libur berikutnya', 'Next holiday'],
+        ep('next-holiday', '/api/libur-nasional/next?from=2026-03-01', ['Libur berikutnya', 'Next holiday'],
           ['Mencari libur terdekat setelah tanggal tertentu.', 'Finds the nearest holiday after a given date.'],
           [q('from', 'date', true, 'Tanggal awal pencarian.', 'The date to search from.', '2026-03-01')]),
-        ep('libur-hari-kerja', '/api/libur-nasional/workdays?start=2026-03-01&end=2026-03-31', ['Hitung hari kerja', 'Count workdays'],
+        ep('workdays', '/api/libur-nasional/workdays?start=2026-03-01&end=2026-03-31', ['Hitung hari kerja', 'Count workdays'],
           ['Menghitung jumlah hari kerja di antara dua tanggal dengan memperhitungkan akhir pekan dan hari libur.', 'Counts workdays between two dates, taking weekends and holidays into account.'],
           [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
            q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31')])
@@ -365,10 +409,10 @@
       title: { id: 'Rahinan Bali', en: 'Balinese rahinan' },
       desc: { id: 'Hari suci dan rahinan seperti Purnama, Tilem, Kajeng Kliwon, Tumpek, dan Buda Keliwon.', en: 'Holy days and rahinan such as Purnama, Tilem, Kajeng Kliwon, Tumpek, and Buda Keliwon.' },
       eps: [
-        ep('rahinan-tanggal', '/api/rahinan?date=2026-03-19', ['Rahinan pada satu tanggal', 'Rahinan on a date'],
+        ep('rahinan-by-date', '/api/rahinan?date=2026-03-19', ['Rahinan pada satu tanggal', 'Rahinan on a date'],
           ['Mengecek rahinan yang jatuh pada tanggal tertentu.', 'Checks which rahinan fall on a given date.'],
           [q('date', 'date', true, 'Tanggal yang dicek.', 'The date to check.', '2026-03-19')]),
-        ep('rahinan-rentang', '/api/rahinan/range?start=2026-03-01&end=2026-03-31', ['Rahinan dalam rentang', 'Rahinan in a range'],
+        ep('rahinan-in-range', '/api/rahinan/range?start=2026-03-01&end=2026-03-31', ['Rahinan dalam rentang', 'Rahinan in a range'],
           ['Mengecek rahinan pada setiap tanggal dalam sebuah rentang.', 'Checks rahinan for every date in a range.'],
           [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
            q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31')])
@@ -379,39 +423,39 @@
       title: { id: 'Otonan', en: 'Otonan' },
       desc: { id: 'Otonan jatuh setiap 210 hari, satu siklus pawukon, sejak hari lahir Masehi.', en: 'Otonan comes around every 210 days, one pawukon cycle, counted from the Gregorian birth date.' },
       eps: [
-        ep('otonan-daftar', '/api/otonan?birth=2004-07-05&count=6', ['Daftar otonan', 'Otonan list'],
+        ep('otonan-list', '/api/otonan?birth=2004-07-05&count=6', ['Daftar otonan', 'Otonan list'],
           ['Menghitung jadwal otonan berikutnya dari hari lahir.', 'Calculates upcoming otonan dates from a birth date.'],
           [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05'),
            q('count', 'number', false, 'Jumlah otonan yang ditampilkan.', 'Number of otonan to return.', '6')]),
-        ep('otonan-berikutnya', '/api/otonan/next?birth=2004-07-05', ['Otonan terdekat', 'Next otonan'],
+        ep('next-otonan', '/api/otonan/next?birth=2004-07-05', ['Otonan terdekat', 'Next otonan'],
           ['Mencari otonan yang paling dekat.', 'Finds the nearest upcoming otonan.'],
           [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05')]),
-        ep('otonan-cek', '/api/otonan/check?birth=2004-07-05&date=2026-05-11', ['Cek hari otonan', 'Check an otonan day'],
+        ep('check-otonan', '/api/otonan/check?birth=2004-07-05&date=2026-05-11', ['Cek hari otonan', 'Check an otonan day'],
           ['Memeriksa apakah sebuah tanggal adalah hari otonan.', 'Checks whether a date is an otonan day.'],
           [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05'),
            q('date', 'date', true, 'Tanggal yang diperiksa.', 'The date to check.', '2026-05-11')]),
-        ep('otonan-tahun', '/api/otonan/year?birth=2004-07-05&year=2026', ['Otonan dalam setahun', 'Otonan in a year'],
+        ep('otonan-in-year', '/api/otonan/year?birth=2004-07-05&year=2026', ['Otonan dalam setahun', 'Otonan in a year'],
           ['Menampilkan semua otonan pada satu tahun.', 'Lists every otonan in one year.'],
           [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05'),
            q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026')])
       ]
     },
     {
-      id: 'dewasa-ayu', icon: 'sparkles',
+      id: 'auspicious-days', icon: 'sparkles',
       title: { id: 'Dewasa ayu', en: 'Dewasa ayu' },
       desc: { id: 'Penilaian hari baik untuk upacara, pernikahan, ngaben, membangun rumah, dan keperluan lain.', en: 'Auspicious day ratings for ceremonies, weddings, ngaben, house building, and more.' },
       eps: [
-        ep('dewasa-ayu-tanggal', '/api/dewasa-ayu?date=2026-03-19&konteks=umum', ['Nilai satu tanggal', 'Rate a date'],
+        ep('rate-a-date', '/api/dewasa-ayu?date=2026-03-19&konteks=umum', ['Nilai satu tanggal', 'Rate a date'],
           ['Menilai baik tidaknya sebuah tanggal untuk keperluan tertentu.', 'Rates how auspicious a date is for a given purpose.'],
           [q('date', 'date', true, 'Tanggal yang dinilai.', 'The date to rate.', '2026-03-19'),
            q('konteks', 'string', false, 'Keperluan yang dinilai, misalnya umum, pernikahan, atau ngaben.', 'The purpose being rated, for example umum, pernikahan, or ngaben.', 'umum')]),
-        ep('dewasa-ayu-terbaik', '/api/dewasa-ayu/best?start=2026-03-01&end=2026-03-31&konteks=pernikahan&topN=5', ['Hari terbaik dalam rentang', 'Best days in a range'],
+        ep('best-days', '/api/dewasa-ayu/best?start=2026-03-01&end=2026-03-31&konteks=pernikahan&topN=5', ['Hari terbaik dalam rentang', 'Best days in a range'],
           ['Mengurutkan hari-hari dalam rentang dan mengambil yang terbaik.', 'Ranks the days in a range and returns the best ones.'],
           [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
            q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31'),
            q('konteks', 'string', false, 'Keperluan yang dinilai.', 'The purpose being rated.', 'pernikahan'),
            q('topN', 'number', false, 'Jumlah hari terbaik yang ditampilkan.', 'How many top days to return.', '5')]),
-        ep('dewasa-ayu-berikutnya', '/api/dewasa-ayu/next?from=2026-03-01&days=30&konteks=ngaben&topN=3', ['Hari baik berikutnya', 'Next good days'],
+        ep('next-good-days', '/api/dewasa-ayu/next?from=2026-03-01&days=30&konteks=ngaben&topN=3', ['Hari baik berikutnya', 'Next good days'],
           ['Memindai beberapa hari ke depan dan mengembalikan hari baik terdekat.', 'Scans the coming days and returns the nearest good days.'],
           [q('from', 'date', true, 'Tanggal awal pemindaian.', 'Date to start scanning from.', '2026-03-01'),
            q('days', 'number', false, 'Berapa hari ke depan yang dipindai.', 'How many days ahead to scan.', '30'),
@@ -420,74 +464,74 @@
       ]
     },
     {
-      id: 'odalan', icon: 'landmark',
+      id: 'temple-odalan', icon: 'landmark',
       title: { id: 'Odalan', en: 'Odalan' },
       desc: { id: 'Jadwal odalan pura, dihitung dari preset pura terkenal atau dari sistem wuku dan sasih.', en: 'Temple odalan schedules, calculated from well-known temple presets or from the wuku and sasih systems.' },
       eps: [
         ep('odalan-presets', '/api/odalan/presets', ['Daftar preset pura', 'Temple presets'],
           ['Daftar pura yang sudah tersedia sebagai preset. Pakai <code>id</code>-nya di endpoint odalan lain.', 'Temples available as presets. Use their <code>id</code> in the other odalan endpoints.'], []),
-        ep('odalan-preset', '/api/odalan?id=pura_besakih_purnama_kadasa&count=5', ['Odalan dari preset', 'Odalan from a preset'],
+        ep('odalan-from-preset', '/api/odalan?id=pura_besakih_purnama_kadasa&count=5', ['Odalan dari preset', 'Odalan from a preset'],
           ['Menghitung odalan berikutnya untuk satu preset pura.', 'Calculates the upcoming odalan for a temple preset.'],
           [q('id', 'string', true, 'ID preset dari <code>/api/odalan/presets</code>.', 'Preset ID from <code>/api/odalan/presets</code>.', 'pura_besakih_purnama_kadasa'),
            q('count', 'number', false, 'Jumlah odalan yang ditampilkan.', 'Number of odalan to return.', '5')]),
-        ep('odalan-wuku', '/api/odalan?sistem=wuku&noWuku=13&noSaptawara=3&noPancawara=4&count=5', ['Odalan sistem wuku', 'Odalan by wuku'],
+        ep('odalan-by-wuku', '/api/odalan?sistem=wuku&noWuku=13&noSaptawara=3&noPancawara=4&count=5', ['Odalan sistem wuku', 'Odalan by wuku'],
           ['Odalan yang jatuh pada kombinasi wuku, saptawara, dan pancawara tertentu (siklus 210 hari).', 'Odalan that fall on a given combination of wuku, saptawara, and pancawara (210-day cycle).'],
           [q('sistem', 'string', true, 'Isi dengan <code>wuku</code>.', 'Set to <code>wuku</code>.', 'wuku'),
            q('noWuku', 'number', true, 'Nomor wuku, 1 sampai 30.', 'Wuku number, 1 to 30.', '13'),
            q('noSaptawara', 'number', true, 'Nomor saptawara, 1 sampai 7.', 'Saptawara number, 1 to 7.', '3'),
            q('noPancawara', 'number', true, 'Nomor pancawara, 1 sampai 5.', 'Pancawara number, 1 to 5.', '4'),
            q('count', 'number', false, 'Jumlah odalan yang ditampilkan.', 'Number of odalan to return.', '5')]),
-        ep('odalan-sasih', '/api/odalan?sistem=sasih&noSasih=10&isPurnama=true&count=3', ['Odalan sistem sasih', 'Odalan by sasih'],
+        ep('odalan-by-sasih', '/api/odalan?sistem=sasih&noSasih=10&isPurnama=true&count=3', ['Odalan sistem sasih', 'Odalan by sasih'],
           ['Odalan yang jatuh pada purnama atau tilem di sasih tertentu.', 'Odalan that fall on purnama or tilem in a given sasih.'],
           [q('sistem', 'string', true, 'Isi dengan <code>sasih</code>.', 'Set to <code>sasih</code>.', 'sasih'),
            q('noSasih', 'number', true, 'Nomor sasih, 1 sampai 12.', 'Sasih number, 1 to 12.', '10'),
            q('isPurnama', 'boolean', true, '<code>true</code> untuk purnama, <code>false</code> untuk tilem.', '<code>true</code> for purnama, <code>false</code> for tilem.', 'true'),
            q('count', 'number', false, 'Jumlah odalan yang ditampilkan.', 'Number of odalan to return.', '3')]),
-        ep('odalan-cek', '/api/odalan/check?date=2026-04-12&id=pura_besakih_purnama_kadasa', ['Cek hari odalan', 'Check an odalan day'],
+        ep('check-odalan', '/api/odalan/check?date=2026-04-12&id=pura_besakih_purnama_kadasa', ['Cek hari odalan', 'Check an odalan day'],
           ['Memeriksa apakah sebuah tanggal adalah hari odalan untuk preset tertentu.', 'Checks whether a date is an odalan day for a given preset.'],
           [q('date', 'date', true, 'Tanggal yang diperiksa.', 'The date to check.', '2026-04-12'),
            q('id', 'string', true, 'ID preset pura.', 'Temple preset ID.', 'pura_besakih_purnama_kadasa')]),
-        ep('odalan-banyak', '/api/odalan/banyak?from=2026-01-01&count=3', ['Odalan banyak preset', 'Odalan for many presets'],
+        ep('odalan-many-presets', '/api/odalan/banyak?from=2026-01-01&count=3', ['Odalan banyak preset', 'Odalan for many presets'],
           ['Jadwal odalan untuk banyak preset sekaligus dalam satu request.', 'Odalan schedules for many presets in a single request.'],
           [q('from', 'date', true, 'Tanggal awal perhitungan.', 'Date to start calculating from.', '2026-01-01'),
            q('count', 'number', false, 'Jumlah odalan per preset.', 'Number of odalan per preset.', '3')])
       ]
     },
     {
-      id: 'upacara-besar', icon: 'flame',
+      id: 'major-ceremonies', icon: 'flame',
       title: { id: 'Upacara besar', en: 'Major ceremonies' },
       desc: { id: 'Karya agung yang siklusnya panjang: Bhatara Turun Kabeh, Panca Wali Krama, dan Eka Dasa Rudra.', en: 'Grand ceremonies with long cycles: Bhatara Turun Kabeh, Panca Wali Krama, and Eka Dasa Rudra.' },
       eps: [
-        ep('upacara-ringkasan', '/api/upacara-besar/ringkasan?from=2026-01-01', ['Ringkasan upacara besar', 'Major ceremonies summary'],
+        ep('ceremonies-summary', '/api/upacara-besar/ringkasan?from=2026-01-01', ['Ringkasan upacara besar', 'Major ceremonies summary'],
           ['Ringkasan upacara besar yang akan datang mulai dari tanggal tertentu.', 'A summary of upcoming major ceremonies from a given date.'],
           [q('from', 'date', true, 'Tanggal awal.', 'Start date.', '2026-01-01')]),
-        ep('upacara-daftar', '/api/upacara-besar?start=2026&end=2100&jenis=bhatara', ['Daftar upacara besar', 'List major ceremonies'],
+        ep('ceremonies-list', '/api/upacara-besar?start=2026&end=2100&jenis=bhatara', ['Daftar upacara besar', 'List major ceremonies'],
           ['Mencari upacara besar dalam rentang tahun, bisa difilter menurut jenis.', 'Finds major ceremonies in a range of years, optionally filtered by type.'],
           [q('start', 'number', true, 'Tahun awal.', 'Start year.', '2026'),
            q('end', 'number', true, 'Tahun akhir.', 'End year.', '2100'),
            q('jenis', 'string', false, 'Salah satu dari <code>bhatara</code> (Bhatara Turun Kabeh), <code>panca</code> (Panca Wali Krama), atau <code>eka</code> (Eka Dasa Rudra).', 'One of <code>bhatara</code> (Bhatara Turun Kabeh), <code>panca</code> (Panca Wali Krama), or <code>eka</code> (Eka Dasa Rudra).', 'bhatara')]),
-        ep('upacara-cek', '/api/upacara-besar/cek?tahunSaka=1946', ['Cek tahun Saka', 'Check a Saka year'],
+        ep('check-saka-year', '/api/upacara-besar/cek?tahunSaka=1946', ['Cek tahun Saka', 'Check a Saka year'],
           ['Memeriksa upacara besar yang jatuh pada tahun Saka tertentu.', 'Checks which major ceremonies fall in a given Saka year.'],
           [q('tahunSaka', 'number', true, 'Tahun Saka.', 'Saka year.', '1946')])
       ]
     },
     {
-      id: 'calendar', icon: 'calendar-days',
+      id: 'monthly-calendar', icon: 'calendar-days',
       title: { id: 'Kalender bulanan', en: 'Monthly calendar' },
       desc: { id: 'Data kalender sebulan penuh dalam satu respons.', en: 'A full month of calendar data in one response.' },
       eps: [
-        ep('calendar-bulan', '/api/calendar?year=2026&month=3', ['Kalender satu bulan', 'One month of calendar'],
+        ep('month-calendar', '/api/calendar?year=2026&month=3', ['Kalender satu bulan', 'One month of calendar'],
           ['Libur nasional dan rahinan Bali untuk setiap hari dalam satu bulan.', 'National holidays and Balinese rahinan for every day of a month.'],
           [q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026'),
            q('month', 'number', true, 'Bulan, 1 sampai 12.', 'Month, 1 to 12.', '3')])
       ]
     },
     {
-      id: 'meta', icon: 'braces',
+      id: 'metadata', icon: 'braces',
       title: { id: 'Metadata', en: 'Metadata' },
       desc: { id: 'Informasi tentang API itu sendiri.', en: 'Information about the API itself.' },
       eps: [
-        ep('meta-endpoint', '/api/meta', ['Metadata endpoint', 'Endpoint metadata'],
+        ep('endpoint-metadata', '/api/meta', ['Metadata endpoint', 'Endpoint metadata'],
           ['Daftar lengkap endpoint yang tersedia.', 'The complete list of available endpoints.'], [])
       ]
     }
@@ -504,7 +548,7 @@
   /* ---------- Highlight JSON ---------- */
   function highlight(str) {
     var safe = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return safe.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (m) {
+    return safe.replace(/("(\\\\u[a-zA-Z0-9]{4}|\\\\[^u]|[^\\\\"])*"(\\s*:)?|\\b(true|false|null)\\b|-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?)/g, function (m) {
       var c = 'j-n';
       if (m.charAt(0) === '"') c = /:$/.test(m) ? 'j-k' : 'j-s';
       else if (m === 'true' || m === 'false') c = 'j-b';
@@ -513,9 +557,19 @@
     });
   }
 
+  /* Highlight ringan untuk TypeScript dan curl */
+  function highlightCode(code) {
+    var safe = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var re = /(\\/\\/[^\\n]*)|("(?:\\\\.|[^"\\\\\\n])*"|'(?:\\\\.|[^'\\\\\\n])*'|\`(?:\\\\.|[^\`\\\\])*\`)|\\b(const|let|await|async|import|from|export|return|new|type|interface|function|if|else|throw|as)\\b|\\b(\\d+)\\b|\\b(fetch|console|JSON|URLSearchParams|Promise|Response|Error|unknown|string|number|boolean|curl)\\b/g;
+    return safe.replace(re, function (m, c, str, k, n) {
+      var cls = c ? 't-c' : str ? 't-s' : k ? 't-k' : n ? 't-n' : 't-b';
+      return '<span class="' + cls + '">' + m + '</span>';
+    });
+  }
+
   /* ---------- Komponen ---------- */
   function codeBlock(text) {
-    return '<div class="codeblock"><pre><code>' + esc(text) + '</code></pre>' +
+    return '<div class="codeblock"><pre><code>' + highlightCode(text) + '</code></pre>' +
       '<button class="btn icon copy" data-copy aria-label="' + esc(UI[lang].copy) + '"><i data-lucide="copy"></i></button></div>';
   }
 
@@ -526,6 +580,7 @@
       '<div class="try-bar"><span class="try-verb">GET</span>' +
       '<input class="try-input" value="' + esc(path) + '" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="URL">' +
       '<button class="btn primary" data-send="' + id + '"><i data-lucide="play"></i><span>' + esc(u.send) + '</span></button></div>' +
+      '<div class="rl-alert" role="alert" aria-live="assertive"></div>' +
       '<div class="try-meta" aria-live="polite"></div>' +
       '<pre class="try-out"><code></code></pre></div>';
   }
@@ -550,7 +605,7 @@
       '<p class="ep-desc">' + e.desc[lang] + '</p>' +
       '<div class="route"><span class="verb">GET</span><code>' + esc(parts[0]) + '<span class="qs">' + esc(qs) + '</span></code></div>' +
       paramsHTML(e) +
-      codeBlock('curl "' + BASE + e.example + '"') +
+      codeTabs(epSamples(e.example)) +
       '<div class="try-slot" id="slot-' + e.slug + '" hidden></div>' +
       '</article>';
   }
@@ -562,20 +617,45 @@
       g.eps.map(epHTML).join('') + '</section>';
   }
 
+  function tsSample(example) {
+    var parts = example.split('?');
+    var path = parts[0], qs = parts[1];
+    if (!qs) {
+      return 'const res = await fetch("' + BASE + path + '");\\nconst data: unknown = await res.json();\\nconsole.log(data);';
+    }
+    var fields = qs.split('&').map(function (kv) {
+      var i = kv.indexOf('=');
+      return '  ' + kv.slice(0, i) + ': "' + kv.slice(i + 1) + '",';
+    }).join('\\n');
+    return 'const params = new URLSearchParams({\\n' + fields + '\\n});\\n\\n' +
+      'const res = await fetch(\`' + BASE + path + '?\${params}\`);\\n' +
+      'const data: unknown = await res.json();\\nconsole.log(data);';
+  }
+
+  function epSamples(example) {
+    return [['TypeScript', tsSample(example)], ['curl', 'curl "' + BASE + example + '"']];
+  }
+
+  function codeTabs(samples) {
+    var tabs = samples.map(function (smp, i) {
+      return '<button class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (i === 0) + '">' + smp[0] + '</button>';
+    }).join('');
+    var panels = samples.map(function (smp, i) {
+      return '<div class="tabpanel" role="tabpanel" data-panel="' + i + '"' + (i === 0 ? '' : ' hidden') + '>' + codeBlock(smp[1]) + '</div>';
+    }).join('');
+    return '<div class="tabset"><div class="tabs" role="tablist">' + tabs + '</div>' + panels + '</div>';
+  }
+
   function sampleTabs() {
-    var url = BASE + '/api/otonan/next';
-    var samples = [
-      ['curl', 'curl "' + url + '?birth=2004-07-05"'],
-      ['JavaScript', 'const res = await fetch("' + url + '?birth=2004-07-05");\nconst data = await res.json();\nconsole.log(data);\nconsole.log(res.headers.get("x-ratelimit-remaining"));'],
-      ['Python', 'import requests\n\nr = requests.get("' + url + '", params={"birth": "2004-07-05"})\nprint(r.json())\nprint(r.headers.get("x-ratelimit-remaining"))']
-    ];
-    var tabs = samples.map(function (s, i) {
-      return '<button class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (i === 0) + '">' + s[0] + '</button>';
-    }).join('');
-    var panels = samples.map(function (s, i) {
-      return '<div class="tabpanel" role="tabpanel" data-panel="' + i + '"' + (i === 0 ? '' : ' hidden') + '>' + codeBlock(s[1]) + '</div>';
-    }).join('');
-    return '<div class="tabs" role="tablist">' + tabs + '</div>' + panels;
+    var ts = 'const BASE = "' + BASE + '";\\n\\n' +
+      'async function getNextOtonan(birth: string): Promise<unknown> {\\n' +
+      '  const res = await fetch(\`\${BASE}/api/otonan/next?birth=\${birth}\`);\\n' +
+      '  if (!res.ok) throw new Error(\`Request failed: \${res.status}\`);\\n' +
+      '  console.log("remaining:", res.headers.get("x-ratelimit-remaining"));\\n' +
+      '  return res.json();\\n' +
+      '}\\n\\n' +
+      'console.log(await getNextOtonan("2004-07-05"));';
+    return codeTabs([['TypeScript', ts], ['curl', 'curl "' + BASE + '/api/otonan/next?birth=2004-07-05"']]);
   }
 
   function render() {
@@ -590,15 +670,15 @@
     $('#sideNav').setAttribute('aria-label', u.nav);
 
     /* Navigasi samping */
-    var nav = '<a class="g" href="#mulai" data-spy="mulai"><i data-lucide="zap"></i>' + esc(u.startTitle) + '</a>';
+    var nav = '<a class="g" href="#quick-start" data-spy="quick-start"><i data-lucide="zap"></i>' + esc(u.startTitle) + '</a>';
     GROUPS.forEach(function (g) {
       nav += '<a class="g" href="#' + g.id + '" data-spy="' + g.id + '"><i data-lucide="' + g.icon + '"></i>' + esc(g.title[lang]) + '</a>';
       g.eps.forEach(function (e) {
         nav += '<a class="e" href="#' + e.slug + '" data-spy="' + e.slug + '">' + esc(e.title[lang]) + '</a>';
       });
     });
-    nav += '<a class="g" href="#rate-limit" data-spy="rate-limit"><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</a>';
-    nav += '<a class="g" href="#catatan" data-spy="catatan"><i data-lucide="info"></i>' + esc(u.notesTitle) + '</a>';
+    nav += '<a class="g" href="#rate-limiting" data-spy="rate-limiting"><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</a>';
+    nav += '<a class="g" href="#notes" data-spy="notes"><i data-lucide="info"></i>' + esc(u.notesTitle) + '</a>';
     $('#sideNav').innerHTML = nav;
 
     /* Konten */
@@ -606,7 +686,7 @@
     html += '<h1>' + esc(u.heroTitle) + '</h1><p class="lede">' + esc(u.heroText) + '</p>';
     html += tryPanel('hero-try', '/api/rahinan?date=' + TODAY, true);
 
-    html += '<section class="grp" id="mulai"><h2><i data-lucide="zap"></i>' + esc(u.startTitle) + '</h2>' +
+    html += '<section class="grp" id="quick-start"><h2><i data-lucide="zap"></i>' + esc(u.startTitle) + '</h2>' +
       '<p class="grp-desc">' + esc(u.startText) + '</p>' +
       '<dl class="facts">' +
         '<div><dt>' + esc(u.fBase) + '</dt><dd><code>' + esc(BASE) + '/api</code></dd></div>' +
@@ -617,7 +697,7 @@
 
     html += GROUPS.map(groupHTML).join('');
 
-    html += '<section class="grp" id="rate-limit"><h2><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</h2>' +
+    html += '<section class="grp" id="rate-limiting"><h2><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</h2>' +
       '<p>' + esc(u.rlText) + '</p>' +
       '<dl class="facts">' +
         '<div><dt><code>x-ratelimit-limit</code></dt><dd>' + esc(u.rlLimit) + '</dd></div>' +
@@ -625,7 +705,7 @@
         '<div><dt><code>x-ratelimit-reset</code></dt><dd>' + esc(u.rlReset) + '</dd></div>' +
       '</dl><p>' + u.rlAfter + '</p></section>';
 
-    html += '<section class="grp" id="catatan"><h2><i data-lucide="info"></i>' + esc(u.notesTitle) + '</h2>' +
+    html += '<section class="grp" id="notes"><h2><i data-lucide="info"></i>' + esc(u.notesTitle) + '</h2>' +
       '<ul class="notes">' + u.notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></section>';
 
     html += '<footer><div class="poleng" aria-hidden="true"></div><p>' + u.footer + '</p></footer>';
@@ -637,6 +717,8 @@
   }
 
   /* ---------- Request ---------- */
+  var rlTimers = {};
+
   function send(id) {
     var root = document.getElementById(id);
     if (!root) return;
@@ -644,26 +726,109 @@
     var input = $('.try-input', root);
     var meta = $('.try-meta', root);
     var out = $('.try-out code', root);
+    var alertEl = $('.rl-alert', root);
+    var sendBtn = $('[data-send]', root);
     var path = input.value.trim();
     if (path.charAt(0) !== '/') path = '/' + path;
+
+    // Reset alert jika ada
+    if (alertEl && !alertEl.dataset.holding) {
+      alertEl.classList.remove('active');
+      alertEl.innerHTML = '';
+    }
 
     meta.textContent = u.loading;
     var t0 = performance.now();
 
-    fetch(BASE + path, { headers: { Accept: 'application/json' } }).then(function (res) {
+    fetch(BASE + path, { headers: { Accept: 'application/json' }, cache: 'no-store' }).then(function (res) {
       var ms = Math.round(performance.now() - t0);
       var limit = res.headers.get('x-ratelimit-limit');
       var left = res.headers.get('x-ratelimit-remaining');
+      var retryAfterHdr = res.headers.get('retry-after');
+
       return res.text().then(function (text) {
-        var shown = text, big = false;
-        try { shown = JSON.stringify(JSON.parse(text), null, 2); } catch (e) {}
+        var shown = text, big = false, parsed = null;
+        try {
+          parsed = JSON.parse(text);
+          shown = JSON.stringify(parsed, null, 2);
+        } catch (e) {}
+
         if (shown.length > 30000) { shown = shown.slice(0, 30000); big = true; }
         out.innerHTML = highlight(shown);
+
         var m = '<span class="st ' + (res.ok ? 'ok' : 'err') + '">' + res.status + ' ' + esc(res.statusText) + '</span>' +
           '<span>' + ms + ' ms</span><span>' + (new Blob([text]).size / 1024).toFixed(1) + ' KB</span>';
-        if (left !== null && limit !== null) m += '<span>' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+
+        if (left !== null && limit !== null) {
+          var leftNum = parseInt(left, 10);
+          if (leftNum === 0 || res.status === 429) {
+            m += '<span class="rl-badge danger">⚠️ ' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+          } else if (leftNum <= 5) {
+            m += '<span class="rl-badge warn">⚠️ ' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+          } else {
+            m += '<span>' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+          }
+        }
         if (big) m += '<span>' + esc(u.truncated) + '</span>';
         meta.innerHTML = m;
+
+        // Rate Limit Handling (HTTP 429)
+        if (res.status === 429 && alertEl) {
+          var seconds = 60;
+          if (retryAfterHdr) {
+            seconds = parseInt(retryAfterHdr, 10) || 60;
+          } else if (parsed && parsed.retryAfter) {
+            seconds = parseInt(parsed.retryAfter, 10) || 60;
+          }
+
+          var detailMsg = (parsed && parsed.message) ? esc(parsed.message) : esc(u.rlExceededMsg);
+
+          var renderAlert = function (rem) {
+            if (rem <= 0) {
+              alertEl.innerHTML = '<div class="rl-alert-icon">✅</div><div class="rl-alert-body"><div class="rl-alert-title" style="color:var(--ok)">' + esc(u.rlReady) + '</div></div>';
+              delete alertEl.dataset.holding;
+              if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i data-lucide="play"></i><span>' + esc(u.send) + '</span>';
+                lucide.createIcons();
+              }
+              setTimeout(function () {
+                alertEl.classList.remove('active');
+                alertEl.innerHTML = '';
+              }, 4000);
+              return;
+            }
+
+            alertEl.innerHTML =
+              '<div class="rl-alert-icon">⚠️</div>' +
+              '<div class="rl-alert-body">' +
+              '<div class="rl-alert-title">' + esc(u.rlExceeded) + '</div>' +
+              '<div class="rl-alert-msg">' + detailMsg + '</div>' +
+              '<div class="rl-cooldown-bar">' + esc(u.rlCooldown) + ' <b class="rl-cd-sec">' + rem + 's</b></div>' +
+              '</div>';
+
+            if (sendBtn) {
+              sendBtn.disabled = true;
+              sendBtn.innerHTML = '<i data-lucide="clock"></i><span>' + esc(u.rlWait) + ' (' + rem + 's)</span>';
+              lucide.createIcons();
+            }
+          };
+
+          alertEl.classList.add('active');
+          alertEl.dataset.holding = 'true';
+          renderAlert(seconds);
+
+          var cd = seconds;
+          clearInterval(rlTimers[id]);
+          rlTimers[id] = setInterval(function () {
+            cd--;
+            if (cd <= 0) {
+              clearInterval(rlTimers[id]);
+              delete rlTimers[id];
+            }
+            renderAlert(cd);
+          }, 1000);
+        }
       });
     }).catch(function () {
       out.textContent = '';
@@ -681,6 +846,9 @@
         if (en.isIntersecting && links[en.target.id]) {
           Object.keys(links).forEach(function (k) { links[k].classList.remove('active'); });
           links[en.target.id].classList.add('active');
+          if (window.scrollY > 200 && history.replaceState && location.hash !== '#' + en.target.id) {
+            history.replaceState(null, '', '#' + en.target.id);
+          }
         }
       });
     }, { rootMargin: '-70px 0px -70% 0px' });
@@ -741,7 +909,7 @@
 
     var tab = t.closest('[data-tab]');
     if (tab) {
-      var wrap = tab.parentNode.parentNode;
+      var wrap = tab.closest('.tabset');
       wrap.querySelectorAll('[data-tab]').forEach(function (b) { b.setAttribute('aria-selected', b === tab ? 'true' : 'false'); });
       wrap.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== tab.dataset.tab; });
       return;
