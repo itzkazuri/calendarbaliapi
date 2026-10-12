@@ -3,12 +3,47 @@ export const indexHtml = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Primary SEO -->
 <title>Kalender Bali API - Dokumentasi</title>
-<meta name="description" content="REST API untuk kalender Bali (wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar) dan hari libur nasional Indonesia.">
-<meta property="og:title" content="Kalender Bali API">
-<meta property="og:description" content="Penanggalan Bali dan libur nasional Indonesia lewat REST API.">
+<meta name="description" content="REST API untuk kalender Bali: wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar, dan hari libur nasional Indonesia. Gratis, tanpa signup.">
+<meta name="keywords" content="kalender bali, bali calendar, api bali, wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar, hari libur nasional, indonesia holiday, REST API">
+<meta name="author" content="Kalender Bali API">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://calendarbaliapi.vercel.app/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kalender Bali API">
+<meta property="og:title" content="Kalender Bali API - REST API Penanggalan Bali">
+<meta property="og:description" content="REST API gratis untuk wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar, dan hari libur nasional Indonesia.">
 <meta property="og:url" content="https://calendarbaliapi.vercel.app/">
-<link rel="icon" type="image/svg+xml" href="assets/favoicon.svg">
+<meta property="og:image" content="https://calendarbaliapi.vercel.app/assets/icon.png">
+<meta property="og:image:alt" content="Kalender Bali API Logo">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:locale" content="id_ID">
+<meta property="og:locale:alternate" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kalender Bali API - REST API Penanggalan Bali">
+<meta name="twitter:description" content="REST API gratis untuk wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar, dan hari libur nasional Indonesia.">
+<meta name="twitter:image" content="https://calendarbaliapi.vercel.app/assets/icon.png">
+<meta name="twitter:image:alt" content="Kalender Bali API Logo">
+
+<!-- Theme & App -->
+<meta name="theme-color" content="#1B6B5A" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121816" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta name="application-name" content="Kalender Bali API">
+<meta name="generator" content="ElysiaJS + Bun">
+
+<!-- Favicon & Icons -->
+<link rel="icon" type="image/x-icon" href="assets/header.ico">
+<link rel="icon" type="image/png" href="assets/icon.png" sizes="512x512">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="shortcut icon" href="assets/header.ico">
 
 <script>
   /* Set tema sebelum render supaya tidak berkedip */
