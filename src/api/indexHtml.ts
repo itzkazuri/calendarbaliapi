@@ -1,1 +1,832 @@
-export const indexHtml = "<!DOCTYPE html>\n<html lang=\"id\" class=\"dark\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title data-i18n-title=\"title\">Kalender Bali API - Dokumentasi & Panduan Penggunaan</title>\n    <!-- Tailwind CSS CDN -->\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n    <script>\n        tailwind.config = {\n            darkMode: 'class',\n            theme: {\n                extend: {\n                    colors: {\n                        background: 'var(--background)',\n                        foreground: 'var(--foreground)',\n                        card: 'var(--card)',\n                        'card-foreground': 'var(--card-foreground)',\n                        primary: 'var(--primary)',\n                        'primary-foreground': 'var(--primary-foreground)',\n                        secondary: 'var(--secondary)',\n                        'secondary-foreground': 'var(--secondary-foreground)',\n                        muted: 'var(--muted)',\n                        'muted-foreground': 'var(--muted-foreground)',\n                        accent: 'var(--accent)',\n                        'accent-foreground': 'var(--accent-foreground)',\n                        destructive: 'var(--destructive)',\n                        'destructive-foreground': 'var(--destructive-foreground)',\n                        success: 'var(--success)',\n                        'success-foreground': 'var(--success-foreground)',\n                        warning: 'var(--warning)',\n                        'warning-foreground': 'var(--warning-foreground)',\n                        info: 'var(--info)',\n                        'info-foreground': 'var(--info-foreground)',\n                        border: 'var(--border)',\n                        input: 'var(--input)',\n                        ring: 'var(--ring)'\n                    },\n                    borderRadius: {\n                        sm: 'calc(var(--radius) * 0.6)',\n                        md: 'calc(var(--radius) * 0.8)',\n                        lg: 'var(--radius)',\n                        xl: 'calc(var(--radius) * 1.4)'\n                    }\n                }\n            }\n        }\n    </script>\n    <!-- FontAwesome for icons -->\n    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">\n    <!-- Google Fonts Inter -->\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        :root {\n            --background: #ffffff;\n            --foreground: #1c1917;\n            --card: #ffffff;\n            --card-foreground: #1c1917;\n            --primary: #2563eb;\n            --primary-foreground: #ffffff;\n            --primary-strong: #1d4ed8;\n            --secondary: #f1f5f9;\n            --secondary-foreground: #0f172a;\n            --muted: #f1f5f9;\n            --muted-foreground: #64748b;\n            --accent: #f8fafc;\n            --accent-foreground: #0f172a;\n            --destructive: #ef4444;\n            --destructive-foreground: #ffffff;\n            --success: #22c55e;\n            --success-foreground: #ffffff;\n            --warning: #f59e0b;\n            --warning-foreground: #ffffff;\n            --info: #0ea5e9;\n            --info-foreground: #ffffff;\n            --border: #e2e8f0;\n            --input: #e2e8f0;\n            --ring: #2563eb;\n            --radius: 0.5rem;\n        }\n\n        .dark {\n            --background: #09090b;\n            --foreground: #fafafa;\n            --card: #121215;\n            --card-foreground: #fafafa;\n            --primary: #3b82f6;\n            --primary-foreground: #09090b;\n            --primary-strong: #2563eb;\n            --secondary: #27272a;\n            --secondary-foreground: #fafafa;\n            --muted: #27272a;\n            --muted-foreground: #a1a1aa;\n            --accent: #27272a;\n            --accent-foreground: #fafafa;\n            --destructive: #ef4444;\n            --destructive-foreground: #fafafa;\n            --success: #22c55e;\n            --success-foreground: #fafafa;\n            --warning: #f59e0b;\n            --warning-foreground: #fafafa;\n            --info: #0ea5e9;\n            --info-foreground: #fafafa;\n            --border: rgba(255, 255, 255, 0.08);\n            --input: rgba(255, 255, 255, 0.12);\n            --ring: #3b82f6;\n            --radius: 0.5rem;\n        }\n\n        body {\n            font-family: 'Inter', sans-serif;\n            background-color: var(--background);\n            color: var(--foreground);\n        }\n    </style>\n    <!-- Favicon -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"assets/favoicon.svg\">\n</head>\n<body class=\"bg-background text-foreground min-h-screen\">\n    <div class=\"max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8\">\n        <!-- Header -->\n        <header class=\"flex flex-col md:flex-row justify-between items-center pb-8 border-b border-border gap-4\">\n            <div class=\"flex items-center space-x-4\">\n                <div class=\"w-14 h-14 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden shadow-sm\">\n                    <img src=\"assets/icon.png\" alt=\"Kalender Bali API Logo\" class=\"w-full h-full object-contain p-1\">\n                </div>\n                <div>\n                    <h1 class=\"text-3xl font-bold tracking-tight text-foreground\" data-i18n=\"title\">\n                        Kalender Bali API\n                    </h1>\n                    <p class=\"text-sm text-muted-foreground\" data-i18n=\"subtitle\">High-performance REST API untuk Libur Nasional & Kalender Bali (ElysiaJS & Bun)</p>\n                </div>\n            </div>\n            <div class=\"flex items-center space-x-3 text-xs flex-wrap gap-2\">\n                <!-- Language Selector Dropdown -->\n                <div class=\"relative\">\n                    <select id=\"langSelect\" class=\"bg-card border border-border text-foreground text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring transition cursor-pointer font-medium\">\n                        <option value=\"id\">🇮🇩 ID (Indonesia)</option>\n                        <option value=\"en\">🇬🇧 EN (English)</option>\n                    </select>\n                </div>\n                <span class=\"px-3 py-1.5 rounded-lg bg-card border border-border text-foreground font-medium flex items-center gap-1.5\">\n                    <span class=\"w-2 h-2 rounded-full bg-success\"></span>\n                    <span data-i18n=\"vercel_ready\">Vercel Ready</span>\n                </span>\n                <span class=\"px-3 py-1.5 rounded-lg bg-card border border-border text-muted-foreground font-medium\" data-i18n=\"rate_limit\">\n                    Rate Limit: 120 req/min\n                </span>\n                <span class=\"px-3 py-1.5 rounded-lg bg-card border border-border text-foreground font-mono\">\n                    v1.0.50\n                </span>\n            </div>\n        </header>\n\n        <!-- Hero Intro -->\n        <section class=\"my-10 bg-card border border-border rounded-xl p-8 shadow-sm\">\n            <h2 class=\"text-xl font-semibold text-foreground mb-3 flex items-center gap-2\">\n                <i class=\"fa-solid fa-book text-muted-foreground\"></i>\n                <span data-i18n=\"about_title\">Tentang API & Penggunaan Dasar</span>\n            </h2>\n            <p class=\"text-muted-foreground text-sm leading-relaxed mb-6\" data-i18n=\"about_desc\">\n                Kalender Bali API adalah layanan backend modular berbasis TypeScript yang menghitung penanggalan tradisional Bali (Wewaran, Pawukon, Sasih, Rahinan, Otonan, Odalan, Dewasa Ayu, Upacara Besar) serta Hari Libur Nasional Indonesia secara akurat.\n            </p>\n            <div class=\"grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono\">\n                <div class=\"bg-background p-4 rounded-lg border border-border\">\n                    <span class=\"text-muted-foreground block mb-1\" data-i18n=\"base_url\">Base URL</span>\n                    <span class=\"text-foreground font-semibold\">/api/...</span>\n                </div>\n                <div class=\"bg-background p-4 rounded-lg border border-border\">\n                    <span class=\"text-muted-foreground block mb-1\" data-i18n=\"date_format\">Format Tanggal</span>\n                    <span class=\"text-foreground font-semibold\">YYYY-MM-DD (e.g. 2026-03-19)</span>\n                </div>\n                <div class=\"bg-background p-4 rounded-lg border border-border\">\n                    <span class=\"text-muted-foreground block mb-1\" data-i18n=\"rate_headers\">Rate Limit Headers</span>\n                    <span class=\"text-foreground font-semibold\">x-ratelimit-*</span>\n                </div>\n            </div>\n        </section>\n\n        <!-- Endpoints Documentation Grid -->\n        <main class=\"space-y-8\">\n            \n            <!-- 1. Kalender Bulanan -->\n            <section class=\"bg-card border border-border rounded-xl p-6 shadow-sm\">\n                <div class=\"flex items-center justify-between mb-4 flex-wrap gap-2\">\n                    <h3 class=\"text-lg font-semibold text-foreground flex items-center gap-2\">\n                        <i class=\"fa-solid fa-calendar-days text-muted-foreground\"></i>\n                        <span data-i18n=\"sec1_title\">1. Kalender Bulanan</span>\n                    </h3>\n                    <span class=\"px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border\">GET /api/calendar</span>\n                </div>\n                <p class=\"text-sm text-muted-foreground mb-4\" data-i18n=\"sec1_desc\">Mengambil data kalender komprehensif (libur nasional & rahinan bali) untuk satu bulan penuh.</p>\n                \n                <div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n                    <div>\n                        <h4 class=\"text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2\" data-i18n=\"query_params\">Query Parameters</h4>\n                        <ul class=\"space-y-1.5 text-xs text-muted-foreground\">\n                            <li><code class=\"text-foreground font-mono\">year</code> (number): Tahun Masehi (contoh: 2026)</li>\n                            <li><code class=\"text-foreground font-mono\">month</code> (number): Bulan 1-12 (contoh: 3)</li>\n                        </ul>\n                    </div>\n                    <div>\n                        <h4 class=\"text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2\" data-i18n=\"example_request\">Contoh Request (cURL)</h4>\n                        <div class=\"bg-background p-3 rounded-lg border border-border font-mono text-xs text-muted-foreground overflow-x-auto\">\n                            curl -i \"https://your-domain.vercel.app/api/calendar?year=2026&month=3\"\n                        </div>\n                    </div>\n                </div>\n            </section>\n\n            <!-- 2. Rahinan Bali -->\n            <section class=\"bg-card border border-border rounded-xl p-6 shadow-sm\">\n                <div class=\"flex items-center justify-between mb-4 flex-wrap gap-2\">\n                    <h3 class=\"text-lg font-semibold text-foreground flex items-center gap-2\">\n                        <i class=\"fa-solid fa-sun text-muted-foreground\"></i>\n                        <span data-i18n=\"sec2_title\">2. Rahinan Bali</span>\n                    </h3>\n                    <span class=\"px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border\">GET /api/rahinan</span>\n                </div>\n                <p class=\"text-sm text-muted-foreground mb-4\" data-i18n=\"sec2_desc\">Mengecek rahinan (Purnama, Tilem, Kajeng Kliwon, Tumpek, Buda Keliwon, dll) pada tanggal tertentu atau rentang tanggal.</p>\n                \n                <div class=\"space-y-4\">\n                    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n                        <div class=\"bg-background p-4 rounded-lg border border-border\">\n                            <span class=\"text-xs font-semibold text-foreground block mb-1\" data-i18n=\"check_date\">Cek Per Tanggal</span>\n                            <code class=\"text-xs font-mono text-muted-foreground block mb-2\">GET /api/rahinan?date=2026-03-19</code>\n                            <span class=\"text-xs text-muted-foreground\" data-i18n=\"param_date\">Parameter: date (YYYY-MM-DD)</span>\n                        </div>\n                        <div class=\"bg-background p-4 rounded-lg border border-border\">\n                            <span class=\"text-xs font-semibold text-foreground block mb-1\" data-i18n=\"check_range\">Cek Rentang Tanggal</span>\n                            <code class=\"text-xs font-mono text-muted-foreground block mb-2\">GET /api/rahinan/range?start=2026-03-01&end=2026-03-31</code>\n                            <span class=\"text-xs text-muted-foreground\" data-i18n=\"param_range\">Parameter: start, end</span>\n                        </div>\n                    </div>\n                </div>\n            </section>\n\n            <!-- 3. Libur Nasional -->\n            <section class=\"bg-card border border-border rounded-xl p-6 shadow-sm\">\n                <div class=\"flex items-center justify-between mb-4 flex-wrap gap-2\">\n                    <h3 class=\"text-lg font-semibold text-foreground flex items-center gap-2\">\n                        <i class=\"fa-solid fa-umbrella-beach text-muted-foreground\"></i>\n                        <span data-i18n=\"sec3_title\">3. Libur Nasional & Cuti Bersama</span>\n                    </h3>\n                    <span class=\"px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border\">GET /api/libur-nasional</span>\n                </div>\n                <p class=\"text-sm text-muted-foreground mb-4\" data-i18n=\"sec3_desc\">Informasi hari libur nasional Indonesia, cuti bersama, pengecekan tanggal merah, dan perhitungan hari kerja (workdays).</p>\n                \n                <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs\">\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/libur-nasional</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec3_item1\">?year=2026 (Daftar libur setahun)</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/libur-nasional/check</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec3_item2\">?date=2026-03-19 (Cek libur)</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/libur-nasional/next</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec3_item3\">?from=2026-03-01 (Libur terdekat)</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/libur-nasional/workdays</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec3_item4\">?start=...&end=... (Hitung hari kerja)</span>\n                    </div>\n                </div>\n            </section>\n\n            <!-- 4. Otonan -->\n            <section class=\"bg-card border border-border rounded-xl p-6 shadow-sm\">\n                <div class=\"flex items-center justify-between mb-4 flex-wrap gap-2\">\n                    <h3 class=\"text-lg font-semibold text-foreground flex items-center gap-2\">\n                        <i class=\"fa-solid fa-baby text-muted-foreground\"></i>\n                        <span data-i18n=\"sec4_title\">4. Otonan (Weton 210 Hari)</span>\n                    </h3>\n                    <span class=\"px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border\">GET /api/otonan</span>\n                </div>\n                <p class=\"text-sm text-muted-foreground mb-4\" data-i18n=\"sec4_desc\">Menghitung jadwal otonan berdasarkan hari lahir Masehi (siklus 210 hari Pawukon).</p>\n                \n                <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs\">\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/otonan</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec4_item1\">?birth=2004-07-05&count=6</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/otonan/next</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec4_item2\">?birth=2004-07-05 (Otonan terdekat)</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/otonan/check</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec4_item3\">?birth=...&date=... (Cek hari otonan)</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/otonan/year</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec4_item4\">?birth=...&year=2026 (Otonan tahun ini)</span>\n                    </div>\n                </div>\n            </section>\n\n            <!-- 5. Dewasa Ayu -->\n            <section class=\"bg-card border border-border rounded-xl p-6 shadow-sm\">\n                <div class=\"flex items-center justify-between mb-4 flex-wrap gap-2\">\n                    <h3 class=\"text-lg font-semibold text-foreground flex items-center gap-2\">\n                        <i class=\"fa-solid fa-wand-magic-sparkles text-muted-foreground\"></i>\n                        <span data-i18n=\"sec5_title\">5. Dewasa Ayu (Hari Baik)</span>\n                    </h3>\n                    <span class=\"px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border\">GET /api/dewasa-ayu</span>\n                </div>\n                <p class=\"text-sm text-muted-foreground mb-4\" data-i18n=\"sec5_desc\">Pencarian hari baik (dewasa ayu) untuk berbagai keperluan upacara, pernikahan, ngaben, membangun rumah, dll.</p>\n                \n                <div class=\"grid grid-cols-1 md:grid-cols-3 gap-3 text-xs\">\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/dewasa-ayu</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec5_item1\">?date=2026-03-19&konteks=umum</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/dewasa-ayu/best</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec5_item2\">?start=...&end=...&konteks=pernikahan&topN=5</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/dewasa-ayu/next</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec5_item3\">?from=...&days=30&konteks=ngaben</span>\n                    </div>\n                </div>\n            </section>\n\n            <!-- 6. Odalan & Upacara Besar -->\n            <section class=\"bg-card border border-border rounded-xl p-6 shadow-sm\">\n                <div class=\"flex items-center justify-between mb-4 flex-wrap gap-2\">\n                    <h3 class=\"text-lg font-semibold text-foreground flex items-center gap-2\">\n                        <i class=\"fa-solid fa-place-of-worship text-muted-foreground\"></i>\n                        <span data-i18n=\"sec6_title\">6. Odalan & Upacara Besar</span>\n                    </h3>\n                    <span class=\"px-2.5 py-1 rounded bg-secondary text-secondary-foreground text-xs font-mono font-medium border border-border\">GET /api/odalan</span>\n                </div>\n                <p class=\"text-sm text-muted-foreground mb-4\" data-i18n=\"sec6_desc\">Jadwal odalan pura (berdasarkan wuku atau sasih) serta ringkasan karya agung dan upacara besar Hindu Bali.</p>\n                \n                <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs\">\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/odalan/presets</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec6_item1\">Daftar preset pura terkenal</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/odalan</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec6_item2\">?id=pura_besakih_purnama_kadasa</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/upacara-besar/ringkasan</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec6_item3\">?from=2026-01-01</span>\n                    </div>\n                    <div class=\"bg-background p-3 rounded-lg border border-border\">\n                        <span class=\"text-foreground font-mono font-semibold block mb-1\">/api/meta</span>\n                        <span class=\"text-muted-foreground\" data-i18n=\"sec6_item4\">Metadata lengkap daftar endpoint</span>\n                    </div>\n                </div>\n            </section>\n\n        </main>\n\n        <!-- Footer -->\n        <footer class=\"mt-16 pt-6 border-t border-border text-center text-xs text-muted-foreground\">\n            <p data-i18n=\"footer\">Kalender Bali API &copy; 2026 &bull; Dibangun dengan ElysiaJS & Bun &bull; Siap deploy di Vercel</p>\n        </footer>\n    </div>\n\n    <!-- Translation Script -->\n    <script>\n        const translations = {\n            id: {\n                title: \"Kalender Bali API\",\n                subtitle: \"High-performance REST API untuk Libur Nasional & Kalender Bali (ElysiaJS & Bun)\",\n                vercel_ready: \"Vercel Ready\",\n                rate_limit: \"Rate Limit: 120 req/min\",\n                about_title: \"Tentang API & Penggunaan Dasar\",\n                about_desc: \"Kalender Bali API adalah layanan backend modular berbasis TypeScript yang menghitung penanggalan tradisional Bali (Wewaran, Pawukon, Sasih, Rahinan, Otonan, Odalan, Dewasa Ayu, Upacara Besar) serta Hari Libur Nasional Indonesia secara akurat.\",\n                base_url: \"Base URL\",\n                date_format: \"Format Tanggal\",\n                rate_headers: \"Rate Limit Headers\",\n                \n                sec1_title: \"1. Kalender Bulanan\",\n                sec1_desc: \"Mengambil data kalender komprehensif (libur nasional & rahinan bali) untuk satu bulan penuh.\",\n                query_params: \"Query Parameters\",\n                example_request: \"Contoh Request (cURL)\",\n\n                sec2_title: \"2. Rahinan Bali\",\n                sec2_desc: \"Mengecek rahinan (Purnama, Tilem, Kajeng Kliwon, Tumpek, Buda Keliwon, dll) pada tanggal tertentu atau rentang tanggal.\",\n                check_date: \"Cek Per Tanggal\",\n                check_range: \"Cek Rentang Tanggal\",\n                param_date: \"Parameter: date (YYYY-MM-DD)\",\n                param_range: \"Parameter: start, end\",\n\n                sec3_title: \"3. Libur Nasional & Cuti Bersama\",\n                sec3_desc: \"Informasi hari libur nasional Indonesia, cuti bersama, pengecekan tanggal merah, dan perhitungan hari kerja (workdays).\",\n                sec3_item1: \"?year=2026 (Daftar libur setahun)\",\n                sec3_item2: \"?date=2026-03-19 (Cek libur)\",\n                sec3_item3: \"?from=2026-03-01 (Libur terdekat)\",\n                sec3_item4: \"?start=...&end=... (Hitung hari kerja)\",\n\n                sec4_title: \"4. Otonan (Weton 210 Hari)\",\n                sec4_desc: \"Menghitung jadwal otonan berdasarkan hari lahir Masehi (siklus 210 hari Pawukon).\",\n                sec4_item1: \"?birth=2004-07-05&count=6\",\n                sec4_item2: \"?birth=2004-07-05 (Otonan terdekat)\",\n                sec4_item3: \"?birth=...&date=... (Cek hari otonan)\",\n                sec4_item4: \"?birth=...&year=2026 (Otonan tahun ini)\",\n\n                sec5_title: \"5. Dewasa Ayu (Hari Baik)\",\n                sec5_desc: \"Pencarian hari baik (dewasa ayu) untuk berbagai keperluan upacara, pernikahan, ngaben, membangun rumah, dll.\",\n                sec5_item1: \"?date=2026-03-19&konteks=umum\",\n                sec5_item2: \"?start=...&end=...&konteks=pernikahan&topN=5\",\n                sec5_item3: \"?from=...&days=30&konteks=ngaben\",\n\n                sec6_title: \"6. Odalan & Upacara Besar\",\n                sec6_desc: \"Jadwal odalan pura (berdasarkan wuku atau sasih) serta ringkasan karya agung dan upacara besar Hindu Bali.\",\n                sec6_item1: \"Daftar preset pura terkenal\",\n                sec6_item2: \"?id=pura_besakih_purnama_kadasa\",\n                sec6_item3: \"?from=2026-01-01\",\n                sec6_item4: \"Metadata lengkap daftar endpoint\",\n\n                footer: \"Kalender Bali API &copy; 2026 &bull; Dibangun dengan ElysiaJS & Bun &bull; Siap deploy di Vercel\"\n            },\n            en: {\n                title: \"Bali Calendar API\",\n                subtitle: \"High-performance REST API for National Holidays & Bali Calendar (ElysiaJS & Bun)\",\n                vercel_ready: \"Vercel Ready\",\n                rate_limit: \"Rate Limit: 120 req/min\",\n                about_title: \"About API & Basic Usage\",\n                about_desc: \"Bali Calendar API is a modular TypeScript-based backend service that accurately calculates traditional Balinese calendar systems (Wewaran, Pawukon, Sasih, Rahinan, Otonan, Odalan, Dewasa Ayu, Major Ceremonies) as well as Indonesian National Holidays.\",\n                base_url: \"Base URL\",\n                date_format: \"Date Format\",\n                rate_headers: \"Rate Limit Headers\",\n                \n                sec1_title: \"1. Monthly Calendar\",\n                sec1_desc: \"Retrieves comprehensive calendar data (national holidays & bali rahinan) for a full month.\",\n                query_params: \"Query Parameters\",\n                example_request: \"Example Request (cURL)\",\n\n                sec2_title: \"2. Bali Rahinan\",\n                sec2_desc: \"Checks rahinan (Purnama, Tilem, Kajeng Kliwon, Tumpek, Buda Keliwon, etc.) for a specific date or date range.\",\n                check_date: \"Check by Date\",\n                check_range: \"Check Date Range\",\n                param_date: \"Parameter: date (YYYY-MM-DD)\",\n                param_range: \"Parameters: start, end\",\n\n                sec3_title: \"3. National Holidays & Joint Leave\",\n                sec3_desc: \"Information on Indonesian national holidays, joint leave (cuti bersama), holiday checks, and workday calculations.\",\n                sec3_item1: \"?year=2026 (Annual holidays list)\",\n                sec3_item2: \"?date=2026-03-19 (Check holiday)\",\n                sec3_item3: \"?from=2026-03-01 (Nearest upcoming holiday)\",\n                sec3_item4: \"?start=...&end=... (Calculate workdays)\",\n\n                sec4_title: \"4. Otonan (210-Day Weton)\",\n                sec4_desc: \"Calculates otonan schedules based on Gregorian birth date (210-day Pawukon cycle).\",\n                sec4_item1: \"?birth=2004-07-05&count=6\",\n                sec4_item2: \"?birth=2004-07-05 (Nearest otonan)\",\n                sec4_item3: \"?birth=...&date=... (Check otonan day)\",\n                sec4_item4: \"?birth=...&year=2026 (Otonan this year)\",\n\n                sec5_title: \"5. Dewasa Ayu (Auspicious Days)\",\n                sec5_desc: \"Search for auspicious days (dewasa ayu) for various ceremonies, weddings, ngaben, house building, etc.\",\n                sec5_item1: \"?date=2026-03-19&konteks=umum\",\n                sec5_item2: \"?start=...&end=...&konteks=pernikahan&topN=5\",\n                sec5_item3: \"?from=...&days=30&konteks=ngaben\",\n\n                sec6_title: \"6. Odalan & Major Ceremonies\",\n                sec6_desc: \"Temple odalan schedules (based on wuku or sasih) and summaries of grand ceremonies (karya agung) in Bali.\",\n                sec6_item1: \"List of famous temple presets\",\n                sec6_item2: \"?id=pura_besakih_purnama_kadasa\",\n                sec6_item3: \"?from=2026-01-01\",\n                sec6_item4: \"Complete endpoint metadata\",\n\n                footer: \"Bali Calendar API &copy; 2026 &bull; Built with ElysiaJS & Bun &bull; Ready for Vercel Deployment\"\n            }\n        };\n\n        function setLanguage(lang) {\n            const dict = translations[lang] || translations.id;\n            document.querySelectorAll('[data-i18n]').forEach(el => {\n                const key = el.getAttribute('data-i18n');\n                if (dict[key]) {\n                    el.innerHTML = dict[key];\n                }\n            });\n            const titleEl = document.querySelector('[data-i18n-title]');\n            if (titleEl && dict.title) {\n                document.title = dict.title + \" - Dokumentasi & Panduan Penggunaan\";\n            }\n            localStorage.setItem('api_lang', lang);\n        }\n\n        const langSelect = document.getElementById('langSelect');\n        const savedLang = localStorage.getItem('api_lang') || 'id';\n        langSelect.value = savedLang;\n        setLanguage(savedLang);\n\n        langSelect.addEventListener('change', (e) => {\n            setLanguage(e.target.value);\n        });\n    </script>\n</body>\n</html>\n";
+export const indexHtml = `<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalender Bali API - Dokumentasi</title>
+<meta name="description" content="REST API untuk kalender Bali (wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar) dan hari libur nasional Indonesia.">
+<meta property="og:title" content="Kalender Bali API">
+<meta property="og:description" content="Penanggalan Bali dan libur nasional Indonesia lewat REST API.">
+<meta property="og:url" content="https://calendarbaliapi.vercel.app/">
+<link rel="icon" type="image/svg+xml" href="assets/favoicon.svg">
+
+<script>
+  /* Set tema sebelum render supaya tidak berkedip */
+  (function () {
+    try {
+      var t = localStorage.getItem('kb_theme');
+      if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #F1F2EE;
+    --surface: #F9FAF6;
+    --ink: #1E2623;
+    --muted: #59645E;
+    --line: #D3D8CE;
+    --accent: #1B6B5A;
+    --on-accent: #FFFFFF;
+    --mark: #D99A00;
+    --code-bg: #E6E9E1;
+    --ok: #1B6B5A;
+    --err: #B2412B;
+    --j-key: #1B6B5A;
+    --j-str: #8A5A12;
+    --j-num: #5A4A9C;
+    --j-bool: #A0436B;
+    --j-null: #7A837E;
+    --font-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  [data-theme="dark"] {
+    --bg: #121816;
+    --surface: #19211E;
+    --ink: #E6EBE7;
+    --muted: #9AA6A0;
+    --line: #2B3631;
+    --accent: #5CC2A6;
+    --on-accent: #0E1512;
+    --mark: #E8B93A;
+    --code-bg: #0F1513;
+    --ok: #5CC2A6;
+    --err: #EE8C75;
+    --j-key: #5CC2A6;
+    --j-str: #E8B93A;
+    --j-num: #A99BE6;
+    --j-bool: #E58AB2;
+    --j-null: #7D8883;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, kbd { font-family: var(--font-mono); }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: 4px; }
+
+  .skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 6px; z-index: 50; }
+  .skip:focus { left: 8px; }
+
+  .lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
+
+  /* Poleng: kain kotak hitam-putih khas Bali */
+  .poleng {
+    height: 10px;
+    background: conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0) 0 0 / 20px 20px;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+
+  /* Header */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    height: 56px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .brand img { width: 30px; height: 30px; object-fit: contain; border-radius: 6px; }
+  .brand b { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+  .ver { font-family: var(--font-mono); font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+  .spacer { flex: 1; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: 500 13px/1 var(--font-body);
+    padding: 8px 12px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--surface); color: var(--ink);
+    cursor: pointer;
+  }
+  .btn:hover { border-color: var(--muted); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn.icon { padding: 8px; }
+  select.btn { padding-right: 8px; }
+  #menuBtn { display: none; }
+
+  /* Layout */
+  .shell { display: grid; grid-template-columns: 264px minmax(0, 1fr); max-width: 1160px; margin: 0 auto; }
+  .side {
+    position: sticky; top: 56px; align-self: start;
+    height: calc(100vh - 56px); overflow-y: auto;
+    padding: 24px 16px 40px 20px;
+    border-right: 1px solid var(--line);
+  }
+  .side a { display: block; padding: 4px 8px; border-radius: 6px; color: var(--muted); text-decoration: none; font-size: 13.5px; line-height: 1.4; }
+  .side a:hover { color: var(--ink); }
+  .side a.active { color: var(--ink); background: var(--code-bg); }
+  .side .g { margin-top: 14px; font-weight: 600; color: var(--ink); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .side .e { padding-left: 32px; }
+  main { padding: 36px 32px 72px; min-width: 0; max-width: 880px; }
+
+  /* Hero */
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(30px, 5vw, 46px); line-height: 1.08; letter-spacing: -0.02em;
+    margin: 0 0 14px; text-wrap: balance;
+  }
+  .lede { max-width: 62ch; color: var(--muted); font-size: 17px; margin: 0 0 26px; }
+
+  /* Console */
+  .try { border: 1px solid var(--ink); border-radius: 10px; overflow: hidden; background: var(--surface); margin-top: 16px; }
+  .try-bar { display: flex; gap: 8px; padding: 10px; border-bottom: 1px solid var(--line); align-items: center; }
+  .try-verb { font: 500 12.5px var(--font-mono); color: var(--accent); padding: 0 4px 0 6px; }
+  .try-input {
+    flex: 1; min-width: 0;
+    font: 13.5px var(--font-mono); color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+  }
+  .try-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 8px 12px; font-size: 12.5px; color: var(--muted); min-height: 36px; align-items: center; }
+  .st { font: 500 12.5px var(--font-mono); }
+  .st.ok { color: var(--ok); }
+  .st.err { color: var(--err); }
+  .try-out { margin: 0; padding: 12px 14px; max-height: 380px; overflow: auto; background: var(--code-bg); font-size: 13px; line-height: 1.55; white-space: pre; }
+  .j-k { color: var(--j-key); } .j-s { color: var(--j-str); } .j-n { color: var(--j-num); } .j-b { color: var(--j-bool); } .j-z { color: var(--j-null); }
+  .t-c { color: var(--muted); font-style: italic; } .t-s { color: var(--j-str); } .t-k { color: var(--j-bool); } .t-n { color: var(--j-num); } .t-b { color: var(--j-key); }
+
+  /* Sections */
+  section.grp { padding-top: 56px; scroll-margin-top: 72px; }
+  h2 {
+    font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.15; letter-spacing: -0.015em;
+    margin: 0 0 8px; display: flex; align-items: center; gap: 10px;
+  }
+  h2 .lucide { width: 22px; height: 22px; color: var(--accent); }
+  .grp-desc { color: var(--muted); max-width: 64ch; margin: 0 0 8px; }
+  h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 0; letter-spacing: -0.01em; }
+  h4 { font-size: 13px; font-weight: 600; margin: 18px 0 4px; color: var(--muted); }
+  p { max-width: 68ch; }
+
+  .ep { padding: 26px 0 8px; border-top: 1px solid var(--line); margin-top: 22px; scroll-margin-top: 72px; }
+  .ep-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ep-desc { margin: 6px 0 12px; color: var(--muted); }
+  .route {
+    display: flex; gap: 10px; align-items: center;
+    font: 13.5px var(--font-mono);
+    background: var(--code-bg); padding: 9px 12px; border-radius: 6px;
+    overflow-x: auto; white-space: nowrap;
+  }
+  .verb { font-weight: 500; color: var(--accent); }
+  .qs { color: var(--muted); }
+  .param { display: grid; grid-template-columns: minmax(7rem, 10rem) 1fr; gap: 2px 16px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14.5px; }
+  .param:first-of-type { border-top: 0; }
+  .param code { font-size: 13.5px; font-weight: 500; }
+  .ptype { display: block; font-size: 12.5px; color: var(--muted); }
+  .ptype b { font-weight: 500; color: var(--ink); }
+  .pex { color: var(--muted); font-size: 13px; }
+  .pex code { color: var(--ink); }
+
+  .codeblock { position: relative; margin-top: 14px; }
+  .codeblock pre { margin: 0; padding: 12px 46px 12px 14px; background: var(--code-bg); border-radius: 6px; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+  .copy { position: absolute; top: 6px; right: 6px; padding: 6px; background: var(--surface); }
+
+  .tabs { display: flex; gap: 2px; margin: 18px 0 8px; border-bottom: 1px solid var(--line); }
+  .tab { font: 500 13px var(--font-body); background: none; border: 0; border-bottom: 2px solid transparent; padding: 6px 12px; margin-bottom: -1px; color: var(--muted); cursor: pointer; }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--mark); }
+  .tabpanel[hidden] { display: none; }
+  .ep .tabs { margin-top: 14px; }
+  .tabpanel .codeblock { margin-top: 0; }
+
+  dl.facts { margin: 18px 0 0; border-top: 1px solid var(--line); }
+  dl.facts > div { display: grid; grid-template-columns: 11rem 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  dl.facts dt { color: var(--muted); }
+  dl.facts dd { margin: 0; }
+  dd code, p code, li code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+  ul.notes { padding-left: 20px; max-width: 68ch; }
+  ul.notes li { margin: 8px 0; }
+
+  footer { margin-top: 72px; }
+  footer p { color: var(--muted); font-size: 13.5px; margin: 14px 0 0; }
+
+  @media (max-width: 900px) {
+    #menuBtn { display: inline-flex; }
+    .shell { grid-template-columns: 1fr; }
+    .side { position: fixed; inset: 56px 0 0 0; height: auto; background: var(--bg); z-index: 15; display: none; border: 0; }
+    body.nav-open .side { display: block; }
+    main { padding: 24px 16px 56px; }
+    .topbar { padding: 0 12px; }
+    .ver { display: none; }
+    dl.facts > div { grid-template-columns: 1fr; gap: 2px; }
+    .param { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+
+<body>
+<a class="skip" href="#content" id="skipLink">Lewati ke konten</a>
+
+<header class="topbar">
+  <button class="btn icon" id="menuBtn" aria-label="Menu" aria-expanded="false"><i data-lucide="menu"></i></button>
+  <a class="brand" href="#top">
+    <img src="assets/icon.png" alt="" onerror="this.style.display='none'">
+    <b>Kalender Bali API</b>
+  </a>
+  <span class="ver">v1.0.50</span>
+  <span class="spacer"></span>
+  <label class="sr" style="position:absolute;left:-999px" for="langSelect" id="langLabel">Bahasa</label>
+  <select id="langSelect" class="btn">
+    <option value="id">Indonesia</option>
+    <option value="en">English</option>
+  </select>
+  <button class="btn icon" id="themeBtn" aria-label="Ganti tema"><i data-lucide="sun-moon"></i></button>
+</header>
+
+<div class="shell" id="top">
+  <nav class="side" id="sideNav" aria-label="Navigasi dokumentasi"></nav>
+  <main id="content"></main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Konfigurasi ---------- */
+  var PROD = 'https://calendarbaliapi.vercel.app';
+  /* Di Vercel (domain produksi, preview, atau custom) request memakai origin yang sama,
+     jadi tombol Coba selalu memanggil deployment yang sedang dibuka. Fallback ke PROD hanya untuk file://. */
+  var BASE = (location.protocol === 'file:' || !location.host) ? PROD : location.origin;
+
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  var now = new Date();
+  var TODAY = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+
+  var esc = function (s) {
+    return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  };
+
+  /* ---------- Teks antarmuka ---------- */
+  var UI = {
+    id: {
+      skip: 'Lewati ke konten', menu: 'Menu', theme: 'Ganti tema', lang: 'Bahasa', nav: 'Navigasi dokumentasi',
+      heroTitle: 'Kalender Bali dalam satu request HTTP',
+      heroText: 'REST API untuk wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar, dan hari libur nasional Indonesia. Dibangun dengan ElysiaJS dan Bun, berjalan di Vercel.',
+      send: 'Kirim', try: 'Coba', copy: 'Salin', copied: 'Tersalin', loading: 'Memuat...',
+      netErr: 'Request gagal. Periksa koneksi Anda. Jika halaman ini dibuka dari domain lain, server harus mengizinkan CORS.',
+      truncated: 'ditampilkan 30.000 karakter pertama',
+      params: 'Parameter', noParams: 'Tanpa parameter', required: 'wajib', optional: 'opsional', example: 'Contoh',
+      remaining: 'sisa kuota',
+      startTitle: 'Mulai cepat',
+      startText: 'Semua endpoint memakai metode GET dan mengembalikan JSON. Contoh memakai TypeScript (fetch bawaan browser, Node 18+, dan Bun) serta curl. Tidak ada langkah setup: salin dan jalankan.',
+      fBase: 'Base URL', fMethod: 'Metode', fMethodV: 'GET, respons dalam JSON', fDate: 'Format tanggal', fDateV: 'YYYY-MM-DD, contoh <code>2026-03-19</code>',
+      fLimit: 'Batas request', fLimitV: '120 request per 60 detik untuk tiap IP',
+      rlTitle: 'Rate limiting',
+      rlText: 'Batas bawaan adalah 120 request per 60 detik untuk setiap IP. Setiap respons membawa tiga header untuk memantau kuota Anda.',
+      rlLimit: 'Jumlah maksimum request dalam satu jendela waktu.',
+      rlRemaining: 'Sisa request yang masih boleh dikirim pada jendela saat ini.',
+      rlReset: 'Penanda kapan jendela waktu dihitung ulang.',
+      rlAfter: 'Jika batas terlampaui, server menolak request sampai jendela direset. Baca <code>x-ratelimit-remaining</code> di klien Anda dan beri jeda sebelum mencapai nol.',
+      notesTitle: 'Catatan',
+      notes: [
+        'Odalan dan Upacara Besar dihitung dengan kaidah kalender baku. Jadwal yang sebenarnya ditetapkan oleh otoritas pura atau desa adat setempat.',
+        'Hari raya Islam memakai kalender Hijriah tabular. Parameter opsional <code>adjustmentIslam</code> tersedia untuk menyesuaikan hasilnya.',
+        'Daftar lengkap endpoint yang aktif selalu tersedia di <code>/api/meta</code>.'
+      ],
+      footer: 'Kalender Bali API &copy; 2026. Dibangun dengan ElysiaJS dan Bun, dihosting di Vercel.',
+      pageTitle: 'Kalender Bali API - Dokumentasi'
+    },
+    en: {
+      skip: 'Skip to content', menu: 'Menu', theme: 'Toggle theme', lang: 'Language', nav: 'Documentation navigation',
+      heroTitle: 'The Balinese calendar in one HTTP request',
+      heroText: 'A REST API for wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, major ceremonies, and Indonesian national holidays. Built with ElysiaJS and Bun, running on Vercel.',
+      send: 'Send', try: 'Try it', copy: 'Copy', copied: 'Copied', loading: 'Loading...',
+      netErr: 'The request failed. Check your connection. If this page is opened from another domain, the server must allow CORS.',
+      truncated: 'showing the first 30,000 characters',
+      params: 'Parameters', noParams: 'No parameters', required: 'required', optional: 'optional', example: 'Example',
+      remaining: 'quota left',
+      startTitle: 'Quick start',
+      startText: 'Every endpoint uses GET and returns JSON. Examples use TypeScript (fetch is built into browsers, Node 18+, and Bun) and curl. There is no setup step: copy and run.',
+      fBase: 'Base URL', fMethod: 'Method', fMethodV: 'GET, JSON responses', fDate: 'Date format', fDateV: 'YYYY-MM-DD, for example <code>2026-03-19</code>',
+      fLimit: 'Request limit', fLimitV: '120 requests per 60 seconds per IP',
+      rlTitle: 'Rate limiting',
+      rlText: 'The default limit is 120 requests per 60 seconds for each IP. Every response carries three headers so you can track your quota.',
+      rlLimit: 'Maximum number of requests in one time window.',
+      rlRemaining: 'Requests still allowed in the current window.',
+      rlReset: 'Indicates when the time window is recalculated.',
+      rlAfter: 'Once the limit is exceeded, the server rejects requests until the window resets. Read <code>x-ratelimit-remaining</code> in your client and back off before it reaches zero.',
+      notesTitle: 'Notes',
+      notes: [
+        'Odalan and Major Ceremonies are calculated with standard calendar rules. Actual schedules are decided by the local temple or village authorities.',
+        'Islamic holidays use a tabular Hijri calendar. The optional <code>adjustmentIslam</code> parameter lets you adjust the result.',
+        'The full list of active endpoints is always available at <code>/api/meta</code>.'
+      ],
+      footer: 'Kalender Bali API &copy; 2026. Built with ElysiaJS and Bun, hosted on Vercel.',
+      pageTitle: 'Bali Calendar API - Documentation'
+    }
+  };
+
+  /* ---------- Data endpoint ---------- */
+  var q = function (n, t, req, id, en, ex) { return { n: n, t: t, req: req, d: { id: id, en: en }, ex: ex }; };
+  var ep = function (slug, example, title, desc, params) {
+    return { slug: slug, example: example, title: { id: title[0], en: title[1] }, desc: { id: desc[0], en: desc[1] }, params: params || [] };
+  };
+
+  var GROUPS = [
+    {
+      id: 'national-holidays', icon: 'tree-palm',
+      title: { id: 'Libur nasional', en: 'National holidays' },
+      desc: { id: 'Hari libur nasional dan cuti bersama Indonesia, termasuk pengecekan tanggal merah dan penghitungan hari kerja.', en: 'Indonesian national holidays and joint leave, including red-date checks and workday counting.' },
+      eps: [
+        ep('holidays-by-year', '/api/libur-nasional?year=2026', ['Daftar libur setahun', 'Holidays in a year'],
+          ['Mengembalikan libur nasional dan cuti bersama untuk satu tahun.', 'Returns national holidays and joint leave for one year.'],
+          [q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026')]),
+        ep('holidays-by-category', '/api/libur-nasional/per-kategori?year=2026', ['Libur per kategori', 'Holidays by category'],
+          ['Libur setahun yang dikelompokkan menurut kategorinya.', 'A year of holidays grouped by category.'],
+          [q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026')]),
+        ep('check-holiday', '/api/libur-nasional/check?date=2026-03-19', ['Cek satu tanggal', 'Check a date'],
+          ['Memeriksa apakah sebuah tanggal adalah hari libur.', 'Checks whether a date is a holiday.'],
+          [q('date', 'date', true, 'Tanggal yang diperiksa.', 'The date to check.', '2026-03-19')]),
+        ep('next-holiday', '/api/libur-nasional/next?from=2026-03-01', ['Libur berikutnya', 'Next holiday'],
+          ['Mencari libur terdekat setelah tanggal tertentu.', 'Finds the nearest holiday after a given date.'],
+          [q('from', 'date', true, 'Tanggal awal pencarian.', 'The date to search from.', '2026-03-01')]),
+        ep('workdays', '/api/libur-nasional/workdays?start=2026-03-01&end=2026-03-31', ['Hitung hari kerja', 'Count workdays'],
+          ['Menghitung jumlah hari kerja di antara dua tanggal dengan memperhitungkan akhir pekan dan hari libur.', 'Counts workdays between two dates, taking weekends and holidays into account.'],
+          [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
+           q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31')])
+      ]
+    },
+    {
+      id: 'rahinan', icon: 'moon-star',
+      title: { id: 'Rahinan Bali', en: 'Balinese rahinan' },
+      desc: { id: 'Hari suci dan rahinan seperti Purnama, Tilem, Kajeng Kliwon, Tumpek, dan Buda Keliwon.', en: 'Holy days and rahinan such as Purnama, Tilem, Kajeng Kliwon, Tumpek, and Buda Keliwon.' },
+      eps: [
+        ep('rahinan-by-date', '/api/rahinan?date=2026-03-19', ['Rahinan pada satu tanggal', 'Rahinan on a date'],
+          ['Mengecek rahinan yang jatuh pada tanggal tertentu.', 'Checks which rahinan fall on a given date.'],
+          [q('date', 'date', true, 'Tanggal yang dicek.', 'The date to check.', '2026-03-19')]),
+        ep('rahinan-in-range', '/api/rahinan/range?start=2026-03-01&end=2026-03-31', ['Rahinan dalam rentang', 'Rahinan in a range'],
+          ['Mengecek rahinan pada setiap tanggal dalam sebuah rentang.', 'Checks rahinan for every date in a range.'],
+          [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
+           q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31')])
+      ]
+    },
+    {
+      id: 'otonan', icon: 'cake',
+      title: { id: 'Otonan', en: 'Otonan' },
+      desc: { id: 'Otonan jatuh setiap 210 hari, satu siklus pawukon, sejak hari lahir Masehi.', en: 'Otonan comes around every 210 days, one pawukon cycle, counted from the Gregorian birth date.' },
+      eps: [
+        ep('otonan-list', '/api/otonan?birth=2004-07-05&count=6', ['Daftar otonan', 'Otonan list'],
+          ['Menghitung jadwal otonan berikutnya dari hari lahir.', 'Calculates upcoming otonan dates from a birth date.'],
+          [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05'),
+           q('count', 'number', false, 'Jumlah otonan yang ditampilkan.', 'Number of otonan to return.', '6')]),
+        ep('next-otonan', '/api/otonan/next?birth=2004-07-05', ['Otonan terdekat', 'Next otonan'],
+          ['Mencari otonan yang paling dekat.', 'Finds the nearest upcoming otonan.'],
+          [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05')]),
+        ep('check-otonan', '/api/otonan/check?birth=2004-07-05&date=2026-05-11', ['Cek hari otonan', 'Check an otonan day'],
+          ['Memeriksa apakah sebuah tanggal adalah hari otonan.', 'Checks whether a date is an otonan day.'],
+          [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05'),
+           q('date', 'date', true, 'Tanggal yang diperiksa.', 'The date to check.', '2026-05-11')]),
+        ep('otonan-in-year', '/api/otonan/year?birth=2004-07-05&year=2026', ['Otonan dalam setahun', 'Otonan in a year'],
+          ['Menampilkan semua otonan pada satu tahun.', 'Lists every otonan in one year.'],
+          [q('birth', 'date', true, 'Tanggal lahir Masehi.', 'Gregorian birth date.', '2004-07-05'),
+           q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026')])
+      ]
+    },
+    {
+      id: 'auspicious-days', icon: 'sparkles',
+      title: { id: 'Dewasa ayu', en: 'Dewasa ayu' },
+      desc: { id: 'Penilaian hari baik untuk upacara, pernikahan, ngaben, membangun rumah, dan keperluan lain.', en: 'Auspicious day ratings for ceremonies, weddings, ngaben, house building, and more.' },
+      eps: [
+        ep('rate-a-date', '/api/dewasa-ayu?date=2026-03-19&konteks=umum', ['Nilai satu tanggal', 'Rate a date'],
+          ['Menilai baik tidaknya sebuah tanggal untuk keperluan tertentu.', 'Rates how auspicious a date is for a given purpose.'],
+          [q('date', 'date', true, 'Tanggal yang dinilai.', 'The date to rate.', '2026-03-19'),
+           q('konteks', 'string', false, 'Keperluan yang dinilai, misalnya umum, pernikahan, atau ngaben.', 'The purpose being rated, for example umum, pernikahan, or ngaben.', 'umum')]),
+        ep('best-days', '/api/dewasa-ayu/best?start=2026-03-01&end=2026-03-31&konteks=pernikahan&topN=5', ['Hari terbaik dalam rentang', 'Best days in a range'],
+          ['Mengurutkan hari-hari dalam rentang dan mengambil yang terbaik.', 'Ranks the days in a range and returns the best ones.'],
+          [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
+           q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31'),
+           q('konteks', 'string', false, 'Keperluan yang dinilai.', 'The purpose being rated.', 'pernikahan'),
+           q('topN', 'number', false, 'Jumlah hari terbaik yang ditampilkan.', 'How many top days to return.', '5')]),
+        ep('next-good-days', '/api/dewasa-ayu/next?from=2026-03-01&days=30&konteks=ngaben&topN=3', ['Hari baik berikutnya', 'Next good days'],
+          ['Memindai beberapa hari ke depan dan mengembalikan hari baik terdekat.', 'Scans the coming days and returns the nearest good days.'],
+          [q('from', 'date', true, 'Tanggal awal pemindaian.', 'Date to start scanning from.', '2026-03-01'),
+           q('days', 'number', false, 'Berapa hari ke depan yang dipindai.', 'How many days ahead to scan.', '30'),
+           q('konteks', 'string', false, 'Keperluan yang dinilai.', 'The purpose being rated.', 'ngaben'),
+           q('topN', 'number', false, 'Jumlah hari yang ditampilkan.', 'How many days to return.', '3')])
+      ]
+    },
+    {
+      id: 'temple-odalan', icon: 'landmark',
+      title: { id: 'Odalan', en: 'Odalan' },
+      desc: { id: 'Jadwal odalan pura, dihitung dari preset pura terkenal atau dari sistem wuku dan sasih.', en: 'Temple odalan schedules, calculated from well-known temple presets or from the wuku and sasih systems.' },
+      eps: [
+        ep('odalan-presets', '/api/odalan/presets', ['Daftar preset pura', 'Temple presets'],
+          ['Daftar pura yang sudah tersedia sebagai preset. Pakai <code>id</code>-nya di endpoint odalan lain.', 'Temples available as presets. Use their <code>id</code> in the other odalan endpoints.'], []),
+        ep('odalan-from-preset', '/api/odalan?id=pura_besakih_purnama_kadasa&count=5', ['Odalan dari preset', 'Odalan from a preset'],
+          ['Menghitung odalan berikutnya untuk satu preset pura.', 'Calculates the upcoming odalan for a temple preset.'],
+          [q('id', 'string', true, 'ID preset dari <code>/api/odalan/presets</code>.', 'Preset ID from <code>/api/odalan/presets</code>.', 'pura_besakih_purnama_kadasa'),
+           q('count', 'number', false, 'Jumlah odalan yang ditampilkan.', 'Number of odalan to return.', '5')]),
+        ep('odalan-by-wuku', '/api/odalan?sistem=wuku&noWuku=13&noSaptawara=3&noPancawara=4&count=5', ['Odalan sistem wuku', 'Odalan by wuku'],
+          ['Odalan yang jatuh pada kombinasi wuku, saptawara, dan pancawara tertentu (siklus 210 hari).', 'Odalan that fall on a given combination of wuku, saptawara, and pancawara (210-day cycle).'],
+          [q('sistem', 'string', true, 'Isi dengan <code>wuku</code>.', 'Set to <code>wuku</code>.', 'wuku'),
+           q('noWuku', 'number', true, 'Nomor wuku, 1 sampai 30.', 'Wuku number, 1 to 30.', '13'),
+           q('noSaptawara', 'number', true, 'Nomor saptawara, 1 sampai 7.', 'Saptawara number, 1 to 7.', '3'),
+           q('noPancawara', 'number', true, 'Nomor pancawara, 1 sampai 5.', 'Pancawara number, 1 to 5.', '4'),
+           q('count', 'number', false, 'Jumlah odalan yang ditampilkan.', 'Number of odalan to return.', '5')]),
+        ep('odalan-by-sasih', '/api/odalan?sistem=sasih&noSasih=10&isPurnama=true&count=3', ['Odalan sistem sasih', 'Odalan by sasih'],
+          ['Odalan yang jatuh pada purnama atau tilem di sasih tertentu.', 'Odalan that fall on purnama or tilem in a given sasih.'],
+          [q('sistem', 'string', true, 'Isi dengan <code>sasih</code>.', 'Set to <code>sasih</code>.', 'sasih'),
+           q('noSasih', 'number', true, 'Nomor sasih, 1 sampai 12.', 'Sasih number, 1 to 12.', '10'),
+           q('isPurnama', 'boolean', true, '<code>true</code> untuk purnama, <code>false</code> untuk tilem.', '<code>true</code> for purnama, <code>false</code> for tilem.', 'true'),
+           q('count', 'number', false, 'Jumlah odalan yang ditampilkan.', 'Number of odalan to return.', '3')]),
+        ep('check-odalan', '/api/odalan/check?date=2026-04-12&id=pura_besakih_purnama_kadasa', ['Cek hari odalan', 'Check an odalan day'],
+          ['Memeriksa apakah sebuah tanggal adalah hari odalan untuk preset tertentu.', 'Checks whether a date is an odalan day for a given preset.'],
+          [q('date', 'date', true, 'Tanggal yang diperiksa.', 'The date to check.', '2026-04-12'),
+           q('id', 'string', true, 'ID preset pura.', 'Temple preset ID.', 'pura_besakih_purnama_kadasa')]),
+        ep('odalan-many-presets', '/api/odalan/banyak?from=2026-01-01&count=3', ['Odalan banyak preset', 'Odalan for many presets'],
+          ['Jadwal odalan untuk banyak preset sekaligus dalam satu request.', 'Odalan schedules for many presets in a single request.'],
+          [q('from', 'date', true, 'Tanggal awal perhitungan.', 'Date to start calculating from.', '2026-01-01'),
+           q('count', 'number', false, 'Jumlah odalan per preset.', 'Number of odalan per preset.', '3')])
+      ]
+    },
+    {
+      id: 'major-ceremonies', icon: 'flame',
+      title: { id: 'Upacara besar', en: 'Major ceremonies' },
+      desc: { id: 'Karya agung yang siklusnya panjang: Bhatara Turun Kabeh, Panca Wali Krama, dan Eka Dasa Rudra.', en: 'Grand ceremonies with long cycles: Bhatara Turun Kabeh, Panca Wali Krama, and Eka Dasa Rudra.' },
+      eps: [
+        ep('ceremonies-summary', '/api/upacara-besar/ringkasan?from=2026-01-01', ['Ringkasan upacara besar', 'Major ceremonies summary'],
+          ['Ringkasan upacara besar yang akan datang mulai dari tanggal tertentu.', 'A summary of upcoming major ceremonies from a given date.'],
+          [q('from', 'date', true, 'Tanggal awal.', 'Start date.', '2026-01-01')]),
+        ep('ceremonies-list', '/api/upacara-besar?start=2026&end=2100&jenis=bhatara', ['Daftar upacara besar', 'List major ceremonies'],
+          ['Mencari upacara besar dalam rentang tahun, bisa difilter menurut jenis.', 'Finds major ceremonies in a range of years, optionally filtered by type.'],
+          [q('start', 'number', true, 'Tahun awal.', 'Start year.', '2026'),
+           q('end', 'number', true, 'Tahun akhir.', 'End year.', '2100'),
+           q('jenis', 'string', false, 'Salah satu dari <code>bhatara</code> (Bhatara Turun Kabeh), <code>panca</code> (Panca Wali Krama), atau <code>eka</code> (Eka Dasa Rudra).', 'One of <code>bhatara</code> (Bhatara Turun Kabeh), <code>panca</code> (Panca Wali Krama), or <code>eka</code> (Eka Dasa Rudra).', 'bhatara')]),
+        ep('check-saka-year', '/api/upacara-besar/cek?tahunSaka=1946', ['Cek tahun Saka', 'Check a Saka year'],
+          ['Memeriksa upacara besar yang jatuh pada tahun Saka tertentu.', 'Checks which major ceremonies fall in a given Saka year.'],
+          [q('tahunSaka', 'number', true, 'Tahun Saka.', 'Saka year.', '1946')])
+      ]
+    },
+    {
+      id: 'monthly-calendar', icon: 'calendar-days',
+      title: { id: 'Kalender bulanan', en: 'Monthly calendar' },
+      desc: { id: 'Data kalender sebulan penuh dalam satu respons.', en: 'A full month of calendar data in one response.' },
+      eps: [
+        ep('month-calendar', '/api/calendar?year=2026&month=3', ['Kalender satu bulan', 'One month of calendar'],
+          ['Libur nasional dan rahinan Bali untuk setiap hari dalam satu bulan.', 'National holidays and Balinese rahinan for every day of a month.'],
+          [q('year', 'number', true, 'Tahun Masehi.', 'Gregorian year.', '2026'),
+           q('month', 'number', true, 'Bulan, 1 sampai 12.', 'Month, 1 to 12.', '3')])
+      ]
+    },
+    {
+      id: 'metadata', icon: 'braces',
+      title: { id: 'Metadata', en: 'Metadata' },
+      desc: { id: 'Informasi tentang API itu sendiri.', en: 'Information about the API itself.' },
+      eps: [
+        ep('endpoint-metadata', '/api/meta', ['Metadata endpoint', 'Endpoint metadata'],
+          ['Daftar lengkap endpoint yang tersedia.', 'The complete list of available endpoints.'], [])
+      ]
+    }
+  ];
+
+  /* ---------- State ---------- */
+  var lang = 'id';
+  try { lang = localStorage.getItem('kb_lang') || 'id'; } catch (e) {}
+  if (!UI[lang]) lang = 'id';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var observer = null;
+
+  /* ---------- Highlight JSON ---------- */
+  function highlight(str) {
+    var safe = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return safe.replace(/("(\\\\u[a-zA-Z0-9]{4}|\\\\[^u]|[^\\\\"])*"(\\s*:)?|\\b(true|false|null)\\b|-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?)/g, function (m) {
+      var c = 'j-n';
+      if (m.charAt(0) === '"') c = /:$/.test(m) ? 'j-k' : 'j-s';
+      else if (m === 'true' || m === 'false') c = 'j-b';
+      else if (m === 'null') c = 'j-z';
+      return '<span class="' + c + '">' + m + '</span>';
+    });
+  }
+
+  /* Highlight ringan untuk TypeScript dan curl */
+  function highlightCode(code) {
+    var safe = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var re = /(\\/\\/[^\\n]*)|("(?:\\\\.|[^"\\\\\\n])*"|'(?:\\\\.|[^'\\\\\\n])*'|\`(?:\\\\.|[^\`\\\\])*\`)|\\b(const|let|await|async|import|from|export|return|new|type|interface|function|if|else|throw|as)\\b|\\b(\\d+)\\b|\\b(fetch|console|JSON|URLSearchParams|Promise|Response|Error|unknown|string|number|boolean|curl)\\b/g;
+    return safe.replace(re, function (m, c, str, k, n) {
+      var cls = c ? 't-c' : str ? 't-s' : k ? 't-k' : n ? 't-n' : 't-b';
+      return '<span class="' + cls + '">' + m + '</span>';
+    });
+  }
+
+  /* ---------- Komponen ---------- */
+  function codeBlock(text) {
+    return '<div class="codeblock"><pre><code>' + highlightCode(text) + '</code></pre>' +
+      '<button class="btn icon copy" data-copy aria-label="' + esc(UI[lang].copy) + '"><i data-lucide="copy"></i></button></div>';
+  }
+
+  function tryPanel(id, path, hero) {
+    var u = UI[lang];
+    return '<div class="try" id="' + id + '">' +
+      (hero ? '<div class="poleng" aria-hidden="true"></div>' : '') +
+      '<div class="try-bar"><span class="try-verb">GET</span>' +
+      '<input class="try-input" value="' + esc(path) + '" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="URL">' +
+      '<button class="btn primary" data-send="' + id + '"><i data-lucide="play"></i><span>' + esc(u.send) + '</span></button></div>' +
+      '<div class="try-meta" aria-live="polite"></div>' +
+      '<pre class="try-out"><code></code></pre></div>';
+  }
+
+  function paramsHTML(e) {
+    var u = UI[lang];
+    if (!e.params.length) return '<h4>' + esc(u.params) + '</h4><p style="margin:4px 0 0;color:var(--muted);font-size:14.5px">' + esc(u.noParams) + '</p>';
+    var rows = e.params.map(function (p) {
+      return '<div class="param"><div><code>' + esc(p.n) + '</code><span class="ptype">' + esc(p.t) + ', <b>' + (p.req ? u.required : u.optional) + '</b></span></div>' +
+        '<div>' + p.d[lang] + ' <span class="pex">' + esc(u.example) + ': <code>' + esc(p.ex) + '</code></span></div></div>';
+    }).join('');
+    return '<h4>' + esc(u.params) + '</h4>' + rows;
+  }
+
+  function epHTML(e) {
+    var u = UI[lang];
+    var parts = e.example.split('?');
+    var qs = parts[1] ? '?' + parts[1] : '';
+    return '<article class="ep" id="' + e.slug + '">' +
+      '<div class="ep-head"><h3>' + esc(e.title[lang]) + '</h3>' +
+      '<button class="btn" data-try="' + e.slug + '"><i data-lucide="play"></i><span>' + esc(u.try) + '</span></button></div>' +
+      '<p class="ep-desc">' + e.desc[lang] + '</p>' +
+      '<div class="route"><span class="verb">GET</span><code>' + esc(parts[0]) + '<span class="qs">' + esc(qs) + '</span></code></div>' +
+      paramsHTML(e) +
+      codeTabs(epSamples(e.example)) +
+      '<div class="try-slot" id="slot-' + e.slug + '" hidden></div>' +
+      '</article>';
+  }
+
+  function groupHTML(g) {
+    return '<section class="grp" id="' + g.id + '">' +
+      '<h2><i data-lucide="' + g.icon + '"></i>' + esc(g.title[lang]) + '</h2>' +
+      '<p class="grp-desc">' + esc(g.desc[lang]) + '</p>' +
+      g.eps.map(epHTML).join('') + '</section>';
+  }
+
+  function tsSample(example) {
+    var parts = example.split('?');
+    var path = parts[0], qs = parts[1];
+    if (!qs) {
+      return 'const res = await fetch("' + BASE + path + '");\\nconst data: unknown = await res.json();\\nconsole.log(data);';
+    }
+    var fields = qs.split('&').map(function (kv) {
+      var i = kv.indexOf('=');
+      return '  ' + kv.slice(0, i) + ': "' + kv.slice(i + 1) + '",';
+    }).join('\\n');
+    return 'const params = new URLSearchParams({\\n' + fields + '\\n});\\n\\n' +
+      'const res = await fetch(\`' + BASE + path + '?\${params}\`);\\n' +
+      'const data: unknown = await res.json();\\nconsole.log(data);';
+  }
+
+  function epSamples(example) {
+    return [['TypeScript', tsSample(example)], ['curl', 'curl "' + BASE + example + '"']];
+  }
+
+  function codeTabs(samples) {
+    var tabs = samples.map(function (smp, i) {
+      return '<button class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (i === 0) + '">' + smp[0] + '</button>';
+    }).join('');
+    var panels = samples.map(function (smp, i) {
+      return '<div class="tabpanel" role="tabpanel" data-panel="' + i + '"' + (i === 0 ? '' : ' hidden') + '>' + codeBlock(smp[1]) + '</div>';
+    }).join('');
+    return '<div class="tabset"><div class="tabs" role="tablist">' + tabs + '</div>' + panels + '</div>';
+  }
+
+  function sampleTabs() {
+    var ts = 'const BASE = "' + BASE + '";\\n\\n' +
+      'async function getNextOtonan(birth: string): Promise<unknown> {\\n' +
+      '  const res = await fetch(\`\${BASE}/api/otonan/next?birth=\${birth}\`);\\n' +
+      '  if (!res.ok) throw new Error(\`Request failed: \${res.status}\`);\\n' +
+      '  console.log("remaining:", res.headers.get("x-ratelimit-remaining"));\\n' +
+      '  return res.json();\\n' +
+      '}\\n\\n' +
+      'console.log(await getNextOtonan("2004-07-05"));';
+    return codeTabs([['TypeScript', ts], ['curl', 'curl "' + BASE + '/api/otonan/next?birth=2004-07-05"']]);
+  }
+
+  function render() {
+    var u = UI[lang];
+    document.documentElement.lang = lang;
+    document.title = u.pageTitle;
+    $('#skipLink').textContent = u.skip;
+    $('#langLabel').textContent = u.lang;
+    $('#langSelect').value = lang;
+    $('#themeBtn').setAttribute('aria-label', u.theme);
+    $('#menuBtn').setAttribute('aria-label', u.menu);
+    $('#sideNav').setAttribute('aria-label', u.nav);
+
+    /* Navigasi samping */
+    var nav = '<a class="g" href="#quick-start" data-spy="quick-start"><i data-lucide="zap"></i>' + esc(u.startTitle) + '</a>';
+    GROUPS.forEach(function (g) {
+      nav += '<a class="g" href="#' + g.id + '" data-spy="' + g.id + '"><i data-lucide="' + g.icon + '"></i>' + esc(g.title[lang]) + '</a>';
+      g.eps.forEach(function (e) {
+        nav += '<a class="e" href="#' + e.slug + '" data-spy="' + e.slug + '">' + esc(e.title[lang]) + '</a>';
+      });
+    });
+    nav += '<a class="g" href="#rate-limiting" data-spy="rate-limiting"><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</a>';
+    nav += '<a class="g" href="#notes" data-spy="notes"><i data-lucide="info"></i>' + esc(u.notesTitle) + '</a>';
+    $('#sideNav').innerHTML = nav;
+
+    /* Konten */
+    var html = '';
+    html += '<h1>' + esc(u.heroTitle) + '</h1><p class="lede">' + esc(u.heroText) + '</p>';
+    html += tryPanel('hero-try', '/api/rahinan?date=' + TODAY, true);
+
+    html += '<section class="grp" id="quick-start"><h2><i data-lucide="zap"></i>' + esc(u.startTitle) + '</h2>' +
+      '<p class="grp-desc">' + esc(u.startText) + '</p>' +
+      '<dl class="facts">' +
+        '<div><dt>' + esc(u.fBase) + '</dt><dd><code>' + esc(BASE) + '/api</code></dd></div>' +
+        '<div><dt>' + esc(u.fMethod) + '</dt><dd>' + esc(u.fMethodV) + '</dd></div>' +
+        '<div><dt>' + esc(u.fDate) + '</dt><dd>' + u.fDateV + '</dd></div>' +
+        '<div><dt>' + esc(u.fLimit) + '</dt><dd>' + esc(u.fLimitV) + '</dd></div>' +
+      '</dl>' + sampleTabs() + '</section>';
+
+    html += GROUPS.map(groupHTML).join('');
+
+    html += '<section class="grp" id="rate-limiting"><h2><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</h2>' +
+      '<p>' + esc(u.rlText) + '</p>' +
+      '<dl class="facts">' +
+        '<div><dt><code>x-ratelimit-limit</code></dt><dd>' + esc(u.rlLimit) + '</dd></div>' +
+        '<div><dt><code>x-ratelimit-remaining</code></dt><dd>' + esc(u.rlRemaining) + '</dd></div>' +
+        '<div><dt><code>x-ratelimit-reset</code></dt><dd>' + esc(u.rlReset) + '</dd></div>' +
+      '</dl><p>' + u.rlAfter + '</p></section>';
+
+    html += '<section class="grp" id="notes"><h2><i data-lucide="info"></i>' + esc(u.notesTitle) + '</h2>' +
+      '<ul class="notes">' + u.notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></section>';
+
+    html += '<footer><div class="poleng" aria-hidden="true"></div><p>' + u.footer + '</p></footer>';
+
+    $('#content').innerHTML = html;
+    lucide.createIcons();
+    setupSpy();
+    send('hero-try');
+  }
+
+  /* ---------- Request ---------- */
+  function send(id) {
+    var root = document.getElementById(id);
+    if (!root) return;
+    var u = UI[lang];
+    var input = $('.try-input', root);
+    var meta = $('.try-meta', root);
+    var out = $('.try-out code', root);
+    var path = input.value.trim();
+    if (path.charAt(0) !== '/') path = '/' + path;
+
+    meta.textContent = u.loading;
+    var t0 = performance.now();
+
+    fetch(BASE + path, { headers: { Accept: 'application/json' }, cache: 'no-store' }).then(function (res) {
+      var ms = Math.round(performance.now() - t0);
+      var limit = res.headers.get('x-ratelimit-limit');
+      var left = res.headers.get('x-ratelimit-remaining');
+      return res.text().then(function (text) {
+        var shown = text, big = false;
+        try { shown = JSON.stringify(JSON.parse(text), null, 2); } catch (e) {}
+        if (shown.length > 30000) { shown = shown.slice(0, 30000); big = true; }
+        out.innerHTML = highlight(shown);
+        var m = '<span class="st ' + (res.ok ? 'ok' : 'err') + '">' + res.status + ' ' + esc(res.statusText) + '</span>' +
+          '<span>' + ms + ' ms</span><span>' + (new Blob([text]).size / 1024).toFixed(1) + ' KB</span>';
+        if (left !== null && limit !== null) m += '<span>' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
+        if (big) m += '<span>' + esc(u.truncated) + '</span>';
+        meta.innerHTML = m;
+      });
+    }).catch(function () {
+      out.textContent = '';
+      meta.innerHTML = '<span class="st err">' + esc(u.netErr) + '</span>';
+    });
+  }
+
+  /* ---------- Scroll spy ---------- */
+  function setupSpy() {
+    if (observer) observer.disconnect();
+    var links = {};
+    document.querySelectorAll('[data-spy]').forEach(function (a) { links[a.dataset.spy] = a; });
+    observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && links[en.target.id]) {
+          Object.keys(links).forEach(function (k) { links[k].classList.remove('active'); });
+          links[en.target.id].classList.add('active');
+          if (window.scrollY > 200 && history.replaceState && location.hash !== '#' + en.target.id) {
+            history.replaceState(null, '', '#' + en.target.id);
+          }
+        }
+      });
+    }, { rootMargin: '-70px 0px -70% 0px' });
+    Object.keys(links).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  }
+
+  /* ---------- Event ---------- */
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+
+    var copyBtn = t.closest('[data-copy]');
+    if (copyBtn) {
+      var text = $('code', copyBtn.parentNode).textContent;
+      var done = function () {
+        copyBtn.innerHTML = '<i data-lucide="check"></i>';
+        copyBtn.setAttribute('aria-label', UI[lang].copied);
+        lucide.createIcons();
+        setTimeout(function () {
+          copyBtn.innerHTML = '<i data-lucide="copy"></i>';
+          copyBtn.setAttribute('aria-label', UI[lang].copy);
+          lucide.createIcons();
+        }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () {});
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      return;
+    }
+
+    var tryBtn = t.closest('[data-try]');
+    if (tryBtn) {
+      var slug = tryBtn.dataset.try;
+      var slot = document.getElementById('slot-' + slug);
+      if (slot.hidden) {
+        var example = null;
+        GROUPS.forEach(function (g) { g.eps.forEach(function (e) { if (e.slug === slug) example = e.example; }); });
+        slot.innerHTML = tryPanel('try-' + slug, example, false);
+        slot.hidden = false;
+        lucide.createIcons();
+        send('try-' + slug);
+      } else {
+        slot.hidden = true;
+        slot.innerHTML = '';
+      }
+      return;
+    }
+
+    var sendBtn = t.closest('[data-send]');
+    if (sendBtn) { send(sendBtn.dataset.send); return; }
+
+    var tab = t.closest('[data-tab]');
+    if (tab) {
+      var wrap = tab.closest('.tabset');
+      wrap.querySelectorAll('[data-tab]').forEach(function (b) { b.setAttribute('aria-selected', b === tab ? 'true' : 'false'); });
+      wrap.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== tab.dataset.tab; });
+      return;
+    }
+
+    if (t.closest('.side a')) document.body.classList.remove('nav-open');
+  });
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' && ev.target.classList && ev.target.classList.contains('try-input')) {
+      send(ev.target.closest('.try').id);
+    }
+    if (ev.key === 'Escape') {
+      document.body.classList.remove('nav-open');
+      $('#menuBtn').setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  $('#langSelect').addEventListener('change', function (e) {
+    lang = e.target.value;
+    try { localStorage.setItem('kb_lang', lang); } catch (err) {}
+    render();
+  });
+
+  $('#themeBtn').addEventListener('click', function () {
+    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('kb_theme', next); } catch (e) {}
+  });
+
+  $('#menuBtn').addEventListener('click', function () {
+    var open = document.body.classList.toggle('nav-open');
+    this.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  /* ---------- Mulai ---------- */
+  render();
+  if (location.hash) {
+    var target = document.getElementById(location.hash.slice(1));
+    if (target) target.scrollIntoView();
+  }
+})();
+</script>
+</body>
+</html>
+`;
