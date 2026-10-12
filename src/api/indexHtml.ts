@@ -56,9 +56,11 @@ export const indexHtml = `<!DOCTYPE html>
   })();
 </script>
 
+<!-- Font dimuat tanpa memblokir render. Hanya 3 file font (heading 700, body 400 dan 600); kode memakai font mono sistem. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=IBM+Plex+Sans:wght@400;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=IBM+Plex+Sans:wght@400;600&display=swap"></noscript>
 
 <style>
   :root {
@@ -80,7 +82,7 @@ export const indexHtml = `<!DOCTYPE html>
     --j-null: #7A837E;
     --font-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
     --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
   }
   [data-theme="dark"] {
     --bg: #121816;
@@ -102,8 +104,6 @@ export const indexHtml = `<!DOCTYPE html>
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
   body {
     margin: 0;
@@ -121,7 +121,8 @@ export const indexHtml = `<!DOCTYPE html>
   .skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 6px; z-index: 50; }
   .skip:focus { left: 8px; }
 
-  .lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
+  /* Ikon Lucide inline (sprite), tanpa library JS */
+  .lucide { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 
   /* Poleng: kain kotak hitam-putih khas Bali */
   .poleng {
@@ -154,6 +155,7 @@ export const indexHtml = `<!DOCTYPE html>
     cursor: pointer;
   }
   .btn:hover { border-color: var(--muted); }
+  .btn:disabled { opacity: .6; cursor: not-allowed; }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .btn.icon { padding: 8px; }
   select.btn { padding-right: 8px; }
@@ -166,6 +168,7 @@ export const indexHtml = `<!DOCTYPE html>
     height: calc(100vh - 56px); overflow-y: auto;
     padding: 24px 16px 40px 20px;
     border-right: 1px solid var(--line);
+    overscroll-behavior: contain;
   }
   .side a { display: block; padding: 4px 8px; border-radius: 6px; color: var(--muted); text-decoration: none; font-size: 13.5px; line-height: 1.4; }
   .side a:hover { color: var(--ink); }
@@ -195,7 +198,7 @@ export const indexHtml = `<!DOCTYPE html>
   .st { font: 500 12.5px var(--font-mono); }
   .st.ok { color: var(--ok); }
   .st.err { color: var(--err); }
-  .try-out { margin: 0; padding: 12px 14px; max-height: 380px; overflow: auto; background: var(--code-bg); font-size: 13px; line-height: 1.55; white-space: pre; }
+  .try-out { margin: 0; padding: 12px 14px; max-height: 380px; overflow: auto; background: var(--code-bg); font-size: 13px; line-height: 1.55; white-space: pre; contain: content; }
   .j-k { color: var(--j-key); } .j-s { color: var(--j-str); } .j-n { color: var(--j-num); } .j-b { color: var(--j-bool); } .j-z { color: var(--j-null); }
   .t-c { color: var(--muted); font-style: italic; } .t-s { color: var(--j-str); } .t-k { color: var(--j-bool); } .t-n { color: var(--j-num); } .t-b { color: var(--j-key); }
 
@@ -237,11 +240,15 @@ export const indexHtml = `<!DOCTYPE html>
   }
   h2 .lucide { width: 22px; height: 22px; color: var(--accent); }
   .grp-desc { color: var(--muted); max-width: 64ch; margin: 0 0 8px; }
-  h3 { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 0; letter-spacing: -0.01em; }
+  h3 { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 0; letter-spacing: -0.01em; }
   h4 { font-size: 13px; font-weight: 600; margin: 18px 0 4px; color: var(--muted); }
   p { max-width: 68ch; }
 
-  .ep { padding: 26px 0 8px; border-top: 1px solid var(--line); margin-top: 22px; scroll-margin-top: 72px; }
+  /* Endpoint di luar layar tidak di-layout dan tidak di-paint sampai mendekati viewport */
+  .ep {
+    padding: 26px 4px 8px; margin: 22px -4px 0; border-top: 1px solid var(--line); scroll-margin-top: 72px;
+    content-visibility: auto; contain-intrinsic-size: auto 520px;
+  }
   .ep-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .ep-desc { margin: 6px 0 12px; color: var(--muted); }
   .route {
@@ -260,6 +267,7 @@ export const indexHtml = `<!DOCTYPE html>
   .pex { color: var(--muted); font-size: 13px; }
   .pex code { color: var(--ink); }
 
+  .lazy-code { min-height: 190px; }
   .codeblock { position: relative; margin-top: 14px; }
   .codeblock pre { margin: 0; padding: 12px 46px 12px 14px; background: var(--code-bg); border-radius: 6px; overflow-x: auto; font-size: 13px; line-height: 1.6; }
   .copy { position: absolute; top: 6px; right: 6px; padding: 6px; background: var(--surface); }
@@ -297,12 +305,13 @@ export const indexHtml = `<!DOCTYPE html>
 </head>
 
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" x2="20" y1="12" y2="12" /> <line x1="4" x2="20" y1="6" y2="6" /> <line x1="4" x2="20" y1="18" y2="18" /></symbol><symbol id="i-sun-moon" viewBox="0 0 24 24"><path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.9 4.9 1.4 1.4" /> <path d="m17.7 17.7 1.4 1.4" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.3 17.7-1.4 1.4" /> <path d="m19.1 4.9-1.4 1.4" /></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol><symbol id="i-tree-palm" viewBox="0 0 24 24"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4" /> <path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3" /> <path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35" /> <path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14" /></symbol><symbol id="i-moon-star" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9" /> <path d="M20 3v4" /> <path d="M22 5h-4" /></symbol><symbol id="i-cake" viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8" /> <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1" /> <path d="M2 21h20" /> <path d="M7 8v3" /> <path d="M12 8v3" /> <path d="M17 8v3" /> <path d="M7 4h.01" /> <path d="M12 4h.01" /> <path d="M17 4h.01" /></symbol><symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /> <path d="M20 3v4" /> <path d="M22 5h-4" /> <path d="M4 17v2" /> <path d="M5 18H3" /></symbol><symbol id="i-landmark" viewBox="0 0 24 24"><line x1="3" x2="21" y1="22" y2="22" /> <line x1="6" x2="6" y1="18" y2="11" /> <line x1="10" x2="10" y1="18" y2="11" /> <line x1="14" x2="14" y1="18" y2="11" /> <line x1="18" x2="18" y1="18" y2="11" /> <polygon points="12 2 20 7 4 7" /></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></symbol><symbol id="i-calendar-days" viewBox="0 0 24 24"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /> <path d="M8 14h.01" /> <path d="M12 14h.01" /> <path d="M16 14h.01" /> <path d="M8 18h.01" /> <path d="M12 18h.01" /> <path d="M16 18h.01" /></symbol><symbol id="i-braces" viewBox="0 0 24 24"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" /> <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1" /></symbol><symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4" /> <path d="M3.34 19a10 10 0 1 1 17.32 0" /></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol><symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3" /></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14" /></symbol></svg>
 <a class="skip" href="#content" id="skipLink">Lewati ke konten</a>
 
 <header class="topbar">
-  <button class="btn icon" id="menuBtn" aria-label="Menu" aria-expanded="false"><i data-lucide="menu"></i></button>
+  <button class="btn icon" id="menuBtn" aria-label="Menu" aria-expanded="false"><svg class="lucide" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="brand" href="#top">
-    <img src="assets/icon.png" alt="" onerror="this.style.display='none'">
+    <img src="assets/icon.png" alt="" width="30" height="30" decoding="async" onerror="this.style.display='none'">
     <b>Kalender Bali API</b>
   </a>
   <span class="ver">v1.0.50</span>
@@ -312,7 +321,7 @@ export const indexHtml = `<!DOCTYPE html>
     <option value="id">Indonesia</option>
     <option value="en">English</option>
   </select>
-  <button class="btn icon" id="themeBtn" aria-label="Ganti tema"><i data-lucide="sun-moon"></i></button>
+  <button class="btn icon" id="themeBtn" aria-label="Ganti tema"><svg class="lucide" aria-hidden="true"><use href="#i-sun-moon"/></svg></button>
 </header>
 
 <div class="shell" id="top">
@@ -320,7 +329,6 @@ export const indexHtml = `<!DOCTYPE html>
   <main id="content"></main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <script>
 (function () {
   'use strict';
@@ -330,6 +338,8 @@ export const indexHtml = `<!DOCTYPE html>
   /* Di Vercel (domain produksi, preview, atau custom) request memakai origin yang sama,
      jadi tombol Coba selalu memanggil deployment yang sedang dibuka. Fallback ke PROD hanya untuk file://. */
   var BASE = (location.protocol === 'file:' || !location.host) ? PROD : location.origin;
+  var MAX_SHOWN = 20000;      /* batas karakter respons yang ditampilkan, menjaga DOM dan memori tetap kecil */
+  var MAX_PARSE = 150000;     /* respons lebih besar dari ini tidak di-parse, hanya dipotong */
 
   var pad = function (n) { return String(n).padStart(2, '0'); };
   var now = new Date();
@@ -338,6 +348,8 @@ export const indexHtml = `<!DOCTYPE html>
   var esc = function (s) {
     return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
   };
+  var ic = function (n) { return '<svg class="lucide" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
+  var setIcon = function (el, n) { var u = el.querySelector('use'); if (u) u.setAttribute('href', '#i-' + n); };
 
   /* ---------- Teks antarmuka ---------- */
   var UI = {
@@ -347,7 +359,7 @@ export const indexHtml = `<!DOCTYPE html>
       heroText: 'REST API untuk wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, upacara besar, dan hari libur nasional Indonesia. Dibangun dengan ElysiaJS dan Bun, berjalan di Vercel.',
       send: 'Kirim', try: 'Coba', copy: 'Salin', copied: 'Tersalin', loading: 'Memuat...',
       netErr: 'Request gagal. Periksa koneksi Anda. Jika halaman ini dibuka dari domain lain, server harus mengizinkan CORS.',
-      truncated: 'ditampilkan 30.000 karakter pertama',
+      truncated: 'ditampilkan 20.000 karakter pertama',
       params: 'Parameter', noParams: 'Tanpa parameter', required: 'wajib', optional: 'opsional', example: 'Contoh',
       remaining: 'sisa kuota',
       startTitle: 'Mulai cepat',
@@ -380,7 +392,7 @@ export const indexHtml = `<!DOCTYPE html>
       heroText: 'A REST API for wewaran, pawukon, sasih, rahinan, otonan, odalan, dewasa ayu, major ceremonies, and Indonesian national holidays. Built with ElysiaJS and Bun, running on Vercel.',
       send: 'Send', try: 'Try it', copy: 'Copy', copied: 'Copied', loading: 'Loading...',
       netErr: 'The request failed. Check your connection. If this page is opened from another domain, the server must allow CORS.',
-      truncated: 'showing the first 30,000 characters',
+      truncated: 'showing the first 20,000 characters',
       params: 'Parameters', noParams: 'No parameters', required: 'required', optional: 'optional', example: 'Example',
       remaining: 'quota left',
       startTitle: 'Quick start',
@@ -572,13 +584,21 @@ export const indexHtml = `<!DOCTYPE html>
     }
   ];
 
+  /* Indeks slug -> endpoint, dibuat sekali */
+  var EPS = {};
+  GROUPS.forEach(function (g) { g.eps.forEach(function (e) { EPS[e.slug] = e; }); });
+
   /* ---------- State ---------- */
   var lang = 'id';
   try { lang = localStorage.getItem('kb_lang') || 'id'; } catch (e) {}
   if (!UI[lang]) lang = 'id';
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
-  var observer = null;
+  var CODE = {};            /* key -> daftar contoh kode, dirender saat dibutuhkan */
+  var heroCache = null;     /* hasil request hero, supaya ganti bahasa tidak memanggil API lagi */
+  var spyIO = null, codeIO = null;
+  var spyLinks = {}, activeLink = null;
+  var idle = window.requestIdleCallback ? function (f) { window.requestIdleCallback(f, { timeout: 1500 }); } : function (f) { setTimeout(f, 150); };
 
   /* ---------- Highlight JSON ---------- */
   function highlight(str) {
@@ -605,7 +625,7 @@ export const indexHtml = `<!DOCTYPE html>
   /* ---------- Komponen ---------- */
   function codeBlock(text) {
     return '<div class="codeblock"><pre><code>' + highlightCode(text) + '</code></pre>' +
-      '<button class="btn icon copy" data-copy aria-label="' + esc(UI[lang].copy) + '"><i data-lucide="copy"></i></button></div>';
+      '<button class="btn icon copy" data-copy aria-label="' + esc(UI[lang].copy) + '">' + ic('copy') + '</button></div>';
   }
 
   function tryPanel(id, path, hero) {
@@ -614,7 +634,7 @@ export const indexHtml = `<!DOCTYPE html>
       (hero ? '<div class="poleng" aria-hidden="true"></div>' : '') +
       '<div class="try-bar"><span class="try-verb">GET</span>' +
       '<input class="try-input" value="' + esc(path) + '" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="URL">' +
-      '<button class="btn primary" data-send="' + id + '"><i data-lucide="play"></i><span>' + esc(u.send) + '</span></button></div>' +
+      '<button class="btn primary" data-send="' + id + '">' + ic('play') + '<span>' + esc(u.send) + '</span></button></div>' +
       '<div class="rl-alert" role="alert" aria-live="assertive"></div>' +
       '<div class="try-meta" aria-live="polite"></div>' +
       '<pre class="try-out"><code></code></pre></div>';
@@ -636,18 +656,18 @@ export const indexHtml = `<!DOCTYPE html>
     var qs = parts[1] ? '?' + parts[1] : '';
     return '<article class="ep" id="' + e.slug + '">' +
       '<div class="ep-head"><h3>' + esc(e.title[lang]) + '</h3>' +
-      '<button class="btn" data-try="' + e.slug + '"><i data-lucide="play"></i><span>' + esc(u.try) + '</span></button></div>' +
+      '<button class="btn" data-try="' + e.slug + '">' + ic('play') + '<span>' + esc(u.try) + '</span></button></div>' +
       '<p class="ep-desc">' + e.desc[lang] + '</p>' +
       '<div class="route"><span class="verb">GET</span><code>' + esc(parts[0]) + '<span class="qs">' + esc(qs) + '</span></code></div>' +
       paramsHTML(e) +
-      codeTabs(epSamples(e.example)) +
+      '<div class="lazy-code" data-code="' + e.slug + '"></div>' +
       '<div class="try-slot" id="slot-' + e.slug + '" hidden></div>' +
       '</article>';
   }
 
   function groupHTML(g) {
     return '<section class="grp" id="' + g.id + '">' +
-      '<h2><i data-lucide="' + g.icon + '"></i>' + esc(g.title[lang]) + '</h2>' +
+      '<h2>' + ic(g.icon) + esc(g.title[lang]) + '</h2>' +
       '<p class="grp-desc">' + esc(g.desc[lang]) + '</p>' +
       g.eps.map(epHTML).join('') + '</section>';
   }
@@ -671,14 +691,16 @@ export const indexHtml = `<!DOCTYPE html>
     return [['TypeScript', tsSample(example)], ['curl', 'curl "' + BASE + example + '"']];
   }
 
-  function codeTabs(samples) {
+  /* Hanya tab pertama yang dirender. Tab lain dirender saat diklik. */
+  function codeTabs(key, samples) {
+    CODE[key] = samples;
     var tabs = samples.map(function (smp, i) {
       return '<button class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (i === 0) + '">' + smp[0] + '</button>';
     }).join('');
     var panels = samples.map(function (smp, i) {
-      return '<div class="tabpanel" role="tabpanel" data-panel="' + i + '"' + (i === 0 ? '' : ' hidden') + '>' + codeBlock(smp[1]) + '</div>';
+      return '<div class="tabpanel" role="tabpanel" data-panel="' + i + '"' + (i === 0 ? '>' + codeBlock(smp[1]) : ' hidden>') + '</div>';
     }).join('');
-    return '<div class="tabset"><div class="tabs" role="tablist">' + tabs + '</div>' + panels + '</div>';
+    return '<div class="tabset" data-key="' + key + '"><div class="tabs" role="tablist">' + tabs + '</div>' + panels + '</div>';
   }
 
   function sampleTabs() {
@@ -690,7 +712,63 @@ export const indexHtml = `<!DOCTYPE html>
       '  return res.json();\\n' +
       '}\\n\\n' +
       'console.log(await getNextOtonan("2004-07-05"));';
-    return codeTabs([['TypeScript', ts], ['curl', 'curl "' + BASE + '/api/otonan/next?birth=2004-07-05"']]);
+    return codeTabs('quick-start', [['TypeScript', ts], ['curl', 'curl "' + BASE + '/api/otonan/next?birth=2004-07-05"']]);
+  }
+
+  /* Contoh kode endpoint diisi saat mendekati viewport, bukan sekaligus di awal */
+  function fillCode(el) {
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    var e = EPS[el.dataset.code];
+    if (e) el.innerHTML = codeTabs(e.slug, epSamples(e.example));
+  }
+
+  function setupLazy() {
+    if (codeIO) codeIO.disconnect();
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.lazy-code').forEach(fillCode);
+      return;
+    }
+    codeIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { fillCode(en.target); codeIO.unobserve(en.target); }
+      });
+    }, { rootMargin: '900px 0px' });
+    document.querySelectorAll('.lazy-code').forEach(function (el) { codeIO.observe(el); });
+  }
+
+  /* Scroll spy: hanya mengganti satu link aktif, tanpa mengubah URL */
+  function setupSpy() {
+    if (spyIO) spyIO.disconnect();
+    spyLinks = {}; activeLink = null;
+    document.querySelectorAll('[data-spy]').forEach(function (a) { spyLinks[a.dataset.spy] = a; });
+    if (!('IntersectionObserver' in window)) return;
+    spyIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var l = spyLinks[en.target.id];
+        if (l && l !== activeLink) {
+          if (activeLink) activeLink.classList.remove('active');
+          l.classList.add('active');
+          activeLink = l;
+        }
+      });
+    }, { rootMargin: '-70px 0px -70% 0px' });
+    Object.keys(spyLinks).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) spyIO.observe(el);
+    });
+  }
+
+  /* Lompat ke bagian tanpa menyentuh URL (tidak ada hash) */
+  function jumpTo(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var lz = el.querySelector('.lazy-code');
+    if (lz) fillCode(lz);
+    el.scrollIntoView();
+    /* ukuran elemen di atas target baru terhitung setelah layout, koreksi sekali */
+    requestAnimationFrame(function () { el.scrollIntoView(); });
   }
 
   function render() {
@@ -705,23 +783,24 @@ export const indexHtml = `<!DOCTYPE html>
     $('#sideNav').setAttribute('aria-label', u.nav);
 
     /* Navigasi samping */
-    var nav = '<a class="g" href="#quick-start" data-spy="quick-start"><i data-lucide="zap"></i>' + esc(u.startTitle) + '</a>';
+    var nav = '<a class="g" href="#quick-start" data-spy="quick-start">' + ic('zap') + esc(u.startTitle) + '</a>';
     GROUPS.forEach(function (g) {
-      nav += '<a class="g" href="#' + g.id + '" data-spy="' + g.id + '"><i data-lucide="' + g.icon + '"></i>' + esc(g.title[lang]) + '</a>';
+      nav += '<a class="g" href="#' + g.id + '" data-spy="' + g.id + '">' + ic(g.icon) + esc(g.title[lang]) + '</a>';
       g.eps.forEach(function (e) {
         nav += '<a class="e" href="#' + e.slug + '" data-spy="' + e.slug + '">' + esc(e.title[lang]) + '</a>';
       });
     });
-    nav += '<a class="g" href="#rate-limiting" data-spy="rate-limiting"><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</a>';
-    nav += '<a class="g" href="#notes" data-spy="notes"><i data-lucide="info"></i>' + esc(u.notesTitle) + '</a>';
+    nav += '<a class="g" href="#rate-limiting" data-spy="rate-limiting">' + ic('gauge') + esc(u.rlTitle) + '</a>';
+    nav += '<a class="g" href="#notes" data-spy="notes">' + ic('info') + esc(u.notesTitle) + '</a>';
     $('#sideNav').innerHTML = nav;
 
     /* Konten */
+    CODE = {};
     var html = '';
     html += '<h1>' + esc(u.heroTitle) + '</h1><p class="lede">' + esc(u.heroText) + '</p>';
     html += tryPanel('hero-try', '/api/rahinan?date=' + TODAY, true);
 
-    html += '<section class="grp" id="quick-start"><h2><i data-lucide="zap"></i>' + esc(u.startTitle) + '</h2>' +
+    html += '<section class="grp" id="quick-start"><h2>' + ic('zap') + esc(u.startTitle) + '</h2>' +
       '<p class="grp-desc">' + esc(u.startText) + '</p>' +
       '<dl class="facts">' +
         '<div><dt>' + esc(u.fBase) + '</dt><dd><code>' + esc(BASE) + '/api</code></dd></div>' +
@@ -732,7 +811,7 @@ export const indexHtml = `<!DOCTYPE html>
 
     html += GROUPS.map(groupHTML).join('');
 
-    html += '<section class="grp" id="rate-limiting"><h2><i data-lucide="gauge"></i>' + esc(u.rlTitle) + '</h2>' +
+    html += '<section class="grp" id="rate-limiting"><h2>' + ic('gauge') + esc(u.rlTitle) + '</h2>' +
       '<p>' + esc(u.rlText) + '</p>' +
       '<dl class="facts">' +
         '<div><dt><code>x-ratelimit-limit</code></dt><dd>' + esc(u.rlLimit) + '</dd></div>' +
@@ -740,19 +819,75 @@ export const indexHtml = `<!DOCTYPE html>
         '<div><dt><code>x-ratelimit-reset</code></dt><dd>' + esc(u.rlReset) + '</dd></div>' +
       '</dl><p>' + u.rlAfter + '</p></section>';
 
-    html += '<section class="grp" id="notes"><h2><i data-lucide="info"></i>' + esc(u.notesTitle) + '</h2>' +
+    html += '<section class="grp" id="notes"><h2>' + ic('info') + esc(u.notesTitle) + '</h2>' +
       '<ul class="notes">' + u.notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></section>';
 
     html += '<footer><div class="poleng" aria-hidden="true"></div><p>' + u.footer + '</p></footer>';
 
     $('#content').innerHTML = html;
-    lucide.createIcons();
     setupSpy();
-    send('hero-try');
+    setupLazy();
+
+    var hero = document.getElementById('hero-try');
+    if (heroCache) {
+      $('.try-meta', hero).innerHTML = heroCache.meta;
+      $('.try-out code', hero).innerHTML = heroCache.out;
+    } else {
+      idle(function () { send('hero-try'); });
+    }
   }
 
   /* ---------- Request ---------- */
   var rlTimers = {};
+
+  function stopCooldown(id) {
+    if (rlTimers[id]) { clearInterval(rlTimers[id]); delete rlTimers[id]; }
+  }
+
+  function startCooldown(id, root, seconds, detail) {
+    var u = UI[lang];
+    var alertEl = $('.rl-alert', root);
+    var btn = $('[data-send]', root);
+    var label = $('span', btn);
+
+    alertEl.innerHTML =
+      '<div class="rl-alert-icon">⚠️</div>' +
+      '<div class="rl-alert-body">' +
+      '<div class="rl-alert-title">' + esc(u.rlExceeded) + '</div>' +
+      '<div class="rl-alert-msg">' + detail + '</div>' +
+      '<div class="rl-cooldown-bar">' + esc(u.rlCooldown) + ' <b class="rl-cd-sec"></b></div>' +
+      '</div>';
+    alertEl.classList.add('active');
+    alertEl.dataset.holding = 'true';
+
+    var secEl = $('.rl-cd-sec', alertEl);
+    var end = Date.now() + seconds * 1000;
+    btn.disabled = true;
+    setIcon(btn, 'clock');
+
+    var tick = function () {
+      var left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+      secEl.textContent = left + 's';
+      label.textContent = u.rlWait + ' (' + left + 's)';
+      return left;
+    };
+    tick();
+    stopCooldown(id);
+    rlTimers[id] = setInterval(function () {
+      /* panel sudah dibuang dari DOM (ditutup atau ganti bahasa): hentikan timer */
+      if (!document.body.contains(root)) { stopCooldown(id); return; }
+      if (tick() > 0) return;
+      stopCooldown(id);
+      delete alertEl.dataset.holding;
+      btn.disabled = false;
+      setIcon(btn, 'play');
+      label.textContent = u.send;
+      alertEl.innerHTML = '<div class="rl-alert-icon">✅</div><div class="rl-alert-body"><div class="rl-alert-title" style="color:var(--ok)">' + esc(u.rlReady) + '</div></div>';
+      setTimeout(function () {
+        if (!alertEl.dataset.holding) { alertEl.classList.remove('active'); alertEl.textContent = ''; }
+      }, 4000);
+    }, 1000);
+  }
 
   function send(id) {
     var root = document.getElementById(id);
@@ -763,16 +898,15 @@ export const indexHtml = `<!DOCTYPE html>
     var out = $('.try-out code', root);
     var alertEl = $('.rl-alert', root);
     var sendBtn = $('[data-send]', root);
+    if (sendBtn.disabled) return;           /* sedang cooldown atau request berjalan */
+
     var path = input.value.trim();
     if (path.charAt(0) !== '/') path = '/' + path;
 
-    // Reset alert jika ada
-    if (alertEl && !alertEl.dataset.holding) {
-      alertEl.classList.remove('active');
-      alertEl.innerHTML = '';
-    }
+    if (!alertEl.dataset.holding) { alertEl.classList.remove('active'); alertEl.textContent = ''; }
 
     meta.textContent = u.loading;
+    sendBtn.disabled = true;
     var t0 = performance.now();
 
     fetch(BASE + path, { headers: { Accept: 'application/json' }, cache: 'no-store' }).then(function (res) {
@@ -783,131 +917,71 @@ export const indexHtml = `<!DOCTYPE html>
 
       return res.text().then(function (text) {
         var shown = text, big = false, parsed = null;
-        try {
-          parsed = JSON.parse(text);
-          shown = JSON.stringify(parsed, null, 2);
-        } catch (e) {}
-
-        if (shown.length > 30000) { shown = shown.slice(0, 30000); big = true; }
+        if (text.length > MAX_PARSE) {
+          /* respons sangat besar: jangan parse, cukup potong */
+          shown = text.slice(0, MAX_SHOWN);
+          big = true;
+        } else {
+          try { parsed = JSON.parse(text); shown = JSON.stringify(parsed, null, 2); } catch (e) {}
+          if (shown.length > MAX_SHOWN) { shown = shown.slice(0, MAX_SHOWN); big = true; }
+        }
         out.innerHTML = highlight(shown);
 
         var m = '<span class="st ' + (res.ok ? 'ok' : 'err') + '">' + res.status + ' ' + esc(res.statusText) + '</span>' +
-          '<span>' + ms + ' ms</span><span>' + (new Blob([text]).size / 1024).toFixed(1) + ' KB</span>';
+          '<span>' + ms + ' ms</span><span>' + (text.length / 1024).toFixed(1) + ' KB</span>';
 
         if (left !== null && limit !== null) {
           var leftNum = parseInt(left, 10);
-          if (leftNum === 0 || res.status === 429) {
-            m += '<span class="rl-badge danger">⚠️ ' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
-          } else if (leftNum <= 5) {
-            m += '<span class="rl-badge warn">⚠️ ' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
-          } else {
-            m += '<span>' + esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit) + '</span>';
-          }
+          var cls = (leftNum === 0 || res.status === 429) ? 'rl-badge danger' : (leftNum <= 5 ? 'rl-badge warn' : '');
+          var txt = esc(u.remaining) + ' ' + esc(left) + '/' + esc(limit);
+          m += cls ? '<span class="' + cls + '">⚠️ ' + txt + '</span>' : '<span>' + txt + '</span>';
         }
         if (big) m += '<span>' + esc(u.truncated) + '</span>';
         meta.innerHTML = m;
 
-        // Rate Limit Handling (HTTP 429)
-        if (res.status === 429 && alertEl) {
-          var seconds = 60;
-          if (retryAfterHdr) {
-            seconds = parseInt(retryAfterHdr, 10) || 60;
-          } else if (parsed && parsed.retryAfter) {
-            seconds = parseInt(parsed.retryAfter, 10) || 60;
-          }
+        if (id === 'hero-try' && res.status !== 429) heroCache = { meta: m, out: out.innerHTML };
 
-          var detailMsg = (parsed && parsed.message) ? esc(parsed.message) : esc(u.rlExceededMsg);
-
-          var renderAlert = function (rem) {
-            if (rem <= 0) {
-              alertEl.innerHTML = '<div class="rl-alert-icon">✅</div><div class="rl-alert-body"><div class="rl-alert-title" style="color:var(--ok)">' + esc(u.rlReady) + '</div></div>';
-              delete alertEl.dataset.holding;
-              if (sendBtn) {
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = '<i data-lucide="play"></i><span>' + esc(u.send) + '</span>';
-                lucide.createIcons();
-              }
-              setTimeout(function () {
-                alertEl.classList.remove('active');
-                alertEl.innerHTML = '';
-              }, 4000);
-              return;
-            }
-
-            alertEl.innerHTML =
-              '<div class="rl-alert-icon">⚠️</div>' +
-              '<div class="rl-alert-body">' +
-              '<div class="rl-alert-title">' + esc(u.rlExceeded) + '</div>' +
-              '<div class="rl-alert-msg">' + detailMsg + '</div>' +
-              '<div class="rl-cooldown-bar">' + esc(u.rlCooldown) + ' <b class="rl-cd-sec">' + rem + 's</b></div>' +
-              '</div>';
-
-            if (sendBtn) {
-              sendBtn.disabled = true;
-              sendBtn.innerHTML = '<i data-lucide="clock"></i><span>' + esc(u.rlWait) + ' (' + rem + 's)</span>';
-              lucide.createIcons();
-            }
-          };
-
-          alertEl.classList.add('active');
-          alertEl.dataset.holding = 'true';
-          renderAlert(seconds);
-
-          var cd = seconds;
-          clearInterval(rlTimers[id]);
-          rlTimers[id] = setInterval(function () {
-            cd--;
-            if (cd <= 0) {
-              clearInterval(rlTimers[id]);
-              delete rlTimers[id];
-            }
-            renderAlert(cd);
-          }, 1000);
+        if (res.status === 429) {
+          var seconds = parseInt(retryAfterHdr, 10) || (parsed && parseInt(parsed.retryAfter, 10)) || 60;
+          var detail = (parsed && parsed.message) ? esc(parsed.message) : esc(u.rlExceededMsg);
+          startCooldown(id, root, seconds, detail);
+        } else {
+          sendBtn.disabled = false;
         }
       });
     }).catch(function () {
       out.textContent = '';
       meta.innerHTML = '<span class="st err">' + esc(u.netErr) + '</span>';
+      sendBtn.disabled = false;
     });
   }
 
-  /* ---------- Scroll spy ---------- */
-  function setupSpy() {
-    if (observer) observer.disconnect();
-    var links = {};
-    document.querySelectorAll('[data-spy]').forEach(function (a) { links[a.dataset.spy] = a; });
-    observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting && links[en.target.id]) {
-          Object.keys(links).forEach(function (k) { links[k].classList.remove('active'); });
-          links[en.target.id].classList.add('active');
-          if (window.scrollY > 200 && history.replaceState && location.hash !== '#' + en.target.id) {
-            history.replaceState(null, '', '#' + en.target.id);
-          }
-        }
-      });
-    }, { rootMargin: '-70px 0px -70% 0px' });
-    Object.keys(links).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-  }
-
-  /* ---------- Event ---------- */
+  /* ---------- Event (satu listener untuk seluruh halaman) ---------- */
   document.addEventListener('click', function (ev) {
     var t = ev.target;
+
+    /* Link internal: lompat tanpa mengubah URL */
+    var a = t.closest('a[href^="#"]');
+    if (a && a.getAttribute('href').length > 1) {
+      ev.preventDefault();
+      var id = a.getAttribute('href').slice(1);
+      if (id === 'top') window.scrollTo(0, 0);
+      else jumpTo(id);
+      if (id === 'content') { var mn = $('#content'); mn.setAttribute('tabindex', '-1'); mn.focus({ preventScroll: true }); }
+      document.body.classList.remove('nav-open');
+      $('#menuBtn').setAttribute('aria-expanded', 'false');
+      return;
+    }
 
     var copyBtn = t.closest('[data-copy]');
     if (copyBtn) {
       var text = $('code', copyBtn.parentNode).textContent;
       var done = function () {
-        copyBtn.innerHTML = '<i data-lucide="check"></i>';
+        setIcon(copyBtn, 'check');
         copyBtn.setAttribute('aria-label', UI[lang].copied);
-        lucide.createIcons();
         setTimeout(function () {
-          copyBtn.innerHTML = '<i data-lucide="copy"></i>';
+          setIcon(copyBtn, 'copy');
           copyBtn.setAttribute('aria-label', UI[lang].copy);
-          lucide.createIcons();
         }, 1400);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -926,13 +1000,11 @@ export const indexHtml = `<!DOCTYPE html>
       var slug = tryBtn.dataset.try;
       var slot = document.getElementById('slot-' + slug);
       if (slot.hidden) {
-        var example = null;
-        GROUPS.forEach(function (g) { g.eps.forEach(function (e) { if (e.slug === slug) example = e.example; }); });
-        slot.innerHTML = tryPanel('try-' + slug, example, false);
+        slot.innerHTML = tryPanel('try-' + slug, EPS[slug].example, false);
         slot.hidden = false;
-        lucide.createIcons();
         send('try-' + slug);
       } else {
+        stopCooldown('try-' + slug);
         slot.hidden = true;
         slot.innerHTML = '';
       }
@@ -945,12 +1017,15 @@ export const indexHtml = `<!DOCTYPE html>
     var tab = t.closest('[data-tab]');
     if (tab) {
       var wrap = tab.closest('.tabset');
+      var idx = tab.dataset.tab;
       wrap.querySelectorAll('[data-tab]').forEach(function (b) { b.setAttribute('aria-selected', b === tab ? 'true' : 'false'); });
-      wrap.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== tab.dataset.tab; });
+      wrap.querySelectorAll('[data-panel]').forEach(function (p) {
+        var show = p.dataset.panel === idx;
+        if (show && !p.firstChild && CODE[wrap.dataset.key]) p.innerHTML = codeBlock(CODE[wrap.dataset.key][idx][1]);
+        p.hidden = !show;
+      });
       return;
     }
-
-    if (t.closest('.side a')) document.body.classList.remove('nav-open');
   });
 
   document.addEventListener('keydown', function (ev) {
@@ -966,6 +1041,7 @@ export const indexHtml = `<!DOCTYPE html>
   $('#langSelect').addEventListener('change', function (e) {
     lang = e.target.value;
     try { localStorage.setItem('kb_lang', lang); } catch (err) {}
+    Object.keys(rlTimers).forEach(stopCooldown);
     render();
   });
 
@@ -982,9 +1058,12 @@ export const indexHtml = `<!DOCTYPE html>
 
   /* ---------- Mulai ---------- */
   render();
-  if (location.hash) {
-    var target = document.getElementById(location.hash.slice(1));
-    if (target) target.scrollIntoView();
+
+  /* Jika halaman dibuka dengan hash dari tautan lama/luar: lompat sekali, lalu bersihkan hash dari URL */
+  if (location.hash.length > 1) {
+    var h = location.hash.slice(1);
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    jumpTo(h);
   }
 })();
 </script>
