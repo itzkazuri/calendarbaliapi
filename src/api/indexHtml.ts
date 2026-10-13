@@ -459,10 +459,15 @@ export const indexHtml = `<!DOCTYPE html>
         ep('rahinan-by-date', '/api/rahinan?date=2026-03-19', ['Rahinan pada satu tanggal', 'Rahinan on a date'],
           ['Mengecek rahinan yang jatuh pada tanggal tertentu.', 'Checks which rahinan fall on a given date.'],
           [q('date', 'date', true, 'Tanggal yang dicek.', 'The date to check.', '2026-03-19')]),
-        ep('rahinan-in-range', '/api/rahinan/range?start=2026-03-01&end=2026-03-31', ['Rahinan dalam rentang', 'Rahinan in a range'],
-          ['Mengecek rahinan pada setiap tanggal dalam sebuah rentang.', 'Checks rahinan for every date in a range.'],
+        ep('rahinan-in-range', '/api/rahinan/range?start=2026-03-01&end=2026-03-31&nama=galungan', ['Rahinan dalam rentang', 'Rahinan in a range'],
+          ['Mengecek rahinan pada setiap tanggal dalam sebuah rentang. Bisa difilter nama tertentu.', 'Checks rahinan for every date in a range. Can be filtered by name.'],
           [q('start', 'date', true, 'Tanggal awal rentang.', 'Start of the range.', '2026-03-01'),
-           q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31')])
+           q('end', 'date', true, 'Tanggal akhir rentang.', 'End of the range.', '2026-03-31'),
+           q('nama', 'string', false, 'Filter nama rahinan spesifik (misal: galungan, kuningan, purnama, tilem).', 'Filter by specific rahinan name (e.g. galungan, kuningan, purnama, tilem).', 'galungan')]),
+        ep('rahinan-in-year', '/api/rahinan/year?year=2026&nama=galungan', ['Rahinan satu tahun penuh', 'Rahinan in a full year'],
+          ['Menghitung seluruh hari raya rahinan untuk setahun penuh (1900–2100). Bisa difilter nama rahinan tertentu. Dibatasi 1 kali/menit per IP (spam berulang akan dibanned 12 jam).', 'Calculates all Balinese holy days for a full year (1900–2100). Can be filtered by rahinan name. Rate limited to 1 request/min per IP (repeated spam will be banned 12 hours).'],
+          [q('year', 'number', true, 'Tahun Masehi yang dihitung (1900–2100).', 'Gregorian year to calculate (1900–2100).', '2026'),
+           q('nama', 'string', false, 'Filter nama rahinan spesifik (misal: galungan, kuningan, saraswati, purnama).', 'Filter by specific rahinan name (e.g. galungan, kuningan, saraswati, purnama).', 'galungan')])
       ]
     },
     {
@@ -832,8 +837,6 @@ export const indexHtml = `<!DOCTYPE html>
     if (heroCache) {
       $('.try-meta', hero).innerHTML = heroCache.meta;
       $('.try-out code', hero).innerHTML = heroCache.out;
-    } else {
-      idle(function () { send('hero-try'); });
     }
   }
 
@@ -1002,7 +1005,6 @@ export const indexHtml = `<!DOCTYPE html>
       if (slot.hidden) {
         slot.innerHTML = tryPanel('try-' + slug, EPS[slug].example, false);
         slot.hidden = false;
-        send('try-' + slug);
       } else {
         stopCooldown('try-' + slug);
         slot.hidden = true;

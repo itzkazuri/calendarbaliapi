@@ -35,15 +35,15 @@ function parseOdalanDefinition(query: Record<string, string | undefined>): Profi
     const noWuku = Number(query.noWuku);
     const noSaptawara = Number(query.noSaptawara);
     const noPancawara = Number(query.noPancawara);
-    if (!Number.isFinite(noWuku) || !Number.isFinite(noSaptawara) || !Number.isFinite(noPancawara)) {
-      return null;
-    }
+    if (!Number.isInteger(noWuku) || noWuku < 1 || noWuku > 30) return null;
+    if (!Number.isInteger(noSaptawara) || noSaptawara < 0 || noSaptawara > 6) return null;
+    if (!Number.isInteger(noPancawara) || noPancawara < 1 || noPancawara > 5) return null;
     return buatPuraWuku(
       query.id ?? "custom_wuku",
       query.nama ?? "Pura Custom",
-      Math.trunc(noWuku),
-      Math.trunc(noSaptawara),
-      Math.trunc(noPancawara),
+      noWuku,
+      noSaptawara,
+      noPancawara,
       query.lokasi,
     );
   }
@@ -52,11 +52,11 @@ function parseOdalanDefinition(query: Record<string, string | undefined>): Profi
     const noSasih = Number(query.noSasih);
     const isPurnama = query.isPurnama ? query.isPurnama.toLowerCase() !== "false" : true;
     const offsetHari = query.offsetHari ? Number(query.offsetHari) : 0;
-    if (!Number.isFinite(noSasih)) return null;
+    if (!Number.isInteger(noSasih) || noSasih < 1 || noSasih > 12) return null;
     return buatPuraSasih(
       query.id ?? "custom_sasih",
       query.nama ?? "Pura Custom",
-      Math.trunc(noSasih),
+      noSasih,
       isPurnama,
       query.lokasi,
       Number.isFinite(offsetHari) ? Math.trunc(offsetHari) : 0,
@@ -130,8 +130,15 @@ export const odalanRoutes = new Elysia({ name: "odalan" })
       odalan: ok,
     };
   })
-  .get("/odalan/banyak", ({ query }) => {
-    const from = query.from ? parseISODate(query.from) : null;
+  .get("/odalan/banyak", ({ query, set }) => {
+    if (query.from) {
+      const parsed = parseISODate(query.from, 1900, 2100);
+      if (!parsed) {
+        set.status = 400;
+        return { error: "Format from tidak valid. Gunakan format YYYY-MM-DD." };
+      }
+    }
+    const from = query.from ? parseISODate(query.from, 1900, 2100) : null;
     const countPerPura = parseCount(query.count, 3);
 
     const hasil = hitungBanyakOdalan(PURA_PRESET, from ?? new Date(), countPerPura);

@@ -2,18 +2,11 @@ import { Elysia } from "elysia";
 import { getLiburNasional } from "../../engine/liburnasional";
 import { SakaCalendar } from "../../engine/rahinanbali";
 import { getHariRaya } from "../../engine/rahinanbali/hariRaya";
-import { formatISODate, normalizeDate } from "../utils/date";
-
-function parseYear(input: string | undefined): number | null {
-  if (!input) return null;
-  const year = Number(input);
-  if (!Number.isInteger(year) || year < 1900 || year > 2100) return null;
-  return year;
-}
+import { formatISODate, normalizeDate, parseYear } from "../utils/date";
 
 function parseMonth(input: string | undefined): number | null {
   if (!input) return null;
-  const month = Number(input);
+  const month = Number(input.trim());
   if (!Number.isInteger(month) || month < 1 || month > 12) return null;
   return month;
 }
@@ -25,12 +18,21 @@ function getDaysInMonth(year: number, month: number): number {
 export const calendarRoutes = new Elysia({ name: "calendar" }).get(
   "/calendar",
   ({ query, set }) => {
-    const year = parseYear(query.year);
-    const month = parseMonth(query.month);
-
-    if (year === null || month === null) {
+    if (!query.year || !query.month) {
       set.status = 400;
-      return { error: "Parameter year dan month wajib (contoh: 2026&month=3)." };
+      return { error: "Parameter year dan month wajib diisi (contoh: ?year=2026&month=3)." };
+    }
+
+    const year = parseYear(query.year, 1900, 2100);
+    if (year === null) {
+      set.status = 400;
+      return { error: "Tahun tidak valid. Masukkan tahun antara 1900 dan 2100." };
+    }
+
+    const month = parseMonth(query.month);
+    if (month === null) {
+      set.status = 400;
+      return { error: "Bulan tidak valid. Masukkan bulan antara 1 dan 12." };
     }
 
     const daysInMonth = getDaysInMonth(year, month);

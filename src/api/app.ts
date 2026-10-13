@@ -7,6 +7,7 @@ import { odalanRoutes } from "./routes/odalan";
 import { otonanRoutes } from "./routes/otonan";
 import { rahinanBaliRoutes } from "./routes/rahinanBali";
 import { upacaraBesarRoutes } from "./routes/upacaraBesar";
+import { adminRoutes } from "./routes/admin";
 import { indexHtml } from "./indexHtml";
 import { faviconSvg, iconPngBuffer } from "./assetsData";
 import { rateLimit } from "./middleware/rateLimit";
@@ -100,7 +101,8 @@ export const app = new Elysia()
       .use(otonanRoutes)
       .use(odalanRoutes)
       .use(upacaraBesarRoutes)
-      .use(calendarRoutes),
+      .use(calendarRoutes)
+      .use(adminRoutes),
   );
 
 export default app;

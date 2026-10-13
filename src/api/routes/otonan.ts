@@ -5,14 +5,7 @@ import {
   otonanBerikutnya,
   otonanDalamTahun,
 } from "../../engine/rahinanbali/otonanEngine";
-import { formatISODate, parseISODate } from "../utils/date";
-
-function parseYear(input: string | undefined): number | null {
-  if (!input) return null;
-  const year = Number(input);
-  if (!Number.isInteger(year) || year < 1900 || year > 2100) return null;
-  return year;
-}
+import { formatISODate, parseISODate, parseYear } from "../utils/date";
 
 function parseCount(input: string | undefined): number {
   if (!input) return 6;
@@ -38,16 +31,16 @@ export const otonanRoutes = new Elysia({ name: "otonan" })
       return { error: "Parameter birth wajib (YYYY-MM-DD)." };
     }
 
-    const birth = parseISODate(query.birth);
+    const birth = parseISODate(query.birth, 1900, 2100);
     if (!birth) {
       set.status = 400;
-      return { error: "Format birth tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format birth tidak valid. Gunakan YYYY-MM-DD (1900-2100)." };
     }
 
-    const from = query.from ? parseISODate(query.from) : null;
+    const from = query.from ? parseISODate(query.from, 1900, 2100) : null;
     if (query.from && !from) {
       set.status = 400;
-      return { error: "Format from tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format from tidak valid. Gunakan YYYY-MM-DD (1900-2100)." };
     }
 
     const count = parseCount(query.count);
@@ -75,16 +68,16 @@ export const otonanRoutes = new Elysia({ name: "otonan" })
       return { error: "Parameter birth wajib (YYYY-MM-DD)." };
     }
 
-    const birth = parseISODate(query.birth);
+    const birth = parseISODate(query.birth, 1900, 2100);
     if (!birth) {
       set.status = 400;
-      return { error: "Format birth tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format birth tidak valid. Gunakan YYYY-MM-DD (1900-2100)." };
     }
 
-    const from = query.from ? parseISODate(query.from) : null;
+    const from = query.from ? parseISODate(query.from, 1900, 2100) : null;
     if (query.from && !from) {
       set.status = 400;
-      return { error: "Format from tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format from tidak valid. Gunakan YYYY-MM-DD (1900-2100)." };
     }
 
     const next = otonanBerikutnya(birth, from ?? new Date());
@@ -104,11 +97,11 @@ export const otonanRoutes = new Elysia({ name: "otonan" })
       return { error: "Parameter birth dan date wajib (YYYY-MM-DD)." };
     }
 
-    const birth = parseISODate(query.birth);
-    const date = parseISODate(query.date);
+    const birth = parseISODate(query.birth, 1900, 2100);
+    const date = parseISODate(query.date, 1900, 2100);
     if (!birth || !date) {
       set.status = 400;
-      return { error: "Format tanggal tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format tanggal tidak valid. Gunakan YYYY-MM-DD (1900-2100)." };
     }
 
     const ok = isOtonanHariIni(birth, date);
@@ -121,14 +114,19 @@ export const otonanRoutes = new Elysia({ name: "otonan" })
   .get("/otonan/year", ({ query, set }) => {
     if (!query.birth || !query.year) {
       set.status = 400;
-      return { error: "Parameter birth dan year wajib." };
+      return { error: "Parameter birth dan year wajib diisi." };
     }
 
-    const birth = parseISODate(query.birth);
-    const year = parseYear(query.year);
-    if (!birth || year === null) {
+    const birth = parseISODate(query.birth, 1900, 2100);
+    if (!birth) {
       set.status = 400;
-      return { error: "Format birth atau year tidak valid." };
+      return { error: "Format birth tidak valid. Gunakan YYYY-MM-DD (rentang 1900-2100)." };
+    }
+
+    const year = parseYear(query.year, 1900, 2100);
+    if (year === null) {
+      set.status = 400;
+      return { error: "Tahun tidak valid. Masukkan tahun antara 1900 dan 2100." };
     }
 
     const jadwal = otonanDalamTahun(birth, year);

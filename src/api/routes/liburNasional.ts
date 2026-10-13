@@ -7,14 +7,7 @@ import {
   hitungHariKerja,
   liburBerikutnya,
 } from "../../engine/liburnasional";
-import { formatISODate, normalizeDate, parseISODate } from "../utils/date";
-
-function parseYear(input: string | undefined): number | null {
-  if (!input) return null;
-  const year = Number(input);
-  if (!Number.isInteger(year) || year < 1900 || year > 2100) return null;
-  return year;
-}
+import { formatISODate, normalizeDate, parseISODate, parseYear } from "../utils/date";
 
 function parseCategories(input: string | undefined): KategoriLibur[] | undefined {
   if (!input) return undefined;
@@ -39,10 +32,15 @@ function parseAdjustment(input: string | undefined): number {
 
 export const liburNasionalRoutes = new Elysia({ name: "libur-nasional" })
   .get("/libur-nasional", ({ query, set }) => {
-    const year = parseYear(query.year);
+    if (!query.year) {
+      set.status = 400;
+      return { error: "Parameter year wajib diisi (contoh: ?year=2026)." };
+    }
+
+    const year = parseYear(query.year, 1900, 2100);
     if (year === null) {
       set.status = 400;
-      return { error: "Parameter year wajib (contoh: 2026)." };
+      return { error: "Tahun tidak valid. Masukkan tahun antara 1900 dan 2100." };
     }
 
     const termasukCutiBersama = parseBoolean(
@@ -71,10 +69,15 @@ export const liburNasionalRoutes = new Elysia({ name: "libur-nasional" })
     };
   })
   .get("/libur-nasional/per-kategori", ({ query, set }) => {
-    const year = parseYear(query.year);
+    if (!query.year) {
+      set.status = 400;
+      return { error: "Parameter year wajib diisi (contoh: ?year=2026)." };
+    }
+
+    const year = parseYear(query.year, 1900, 2100);
     if (year === null) {
       set.status = 400;
-      return { error: "Parameter year wajib (contoh: 2026)." };
+      return { error: "Tahun tidak valid. Masukkan tahun antara 1900 dan 2100." };
     }
 
     const termasukCutiBersama = parseBoolean(
@@ -147,8 +150,15 @@ export const liburNasionalRoutes = new Elysia({ name: "libur-nasional" })
       },
     };
   })
-  .get("/libur-nasional/next", ({ query }) => {
-    const from = query.from ? parseISODate(query.from) : null;
+  .get("/libur-nasional/next", ({ query, set }) => {
+    if (query.from) {
+      const parsed = parseISODate(query.from, 1900, 2100);
+      if (!parsed) {
+        set.status = 400;
+        return { error: "Format from tidak valid. Gunakan format YYYY-MM-DD (1900-2100)." };
+      }
+    }
+    const from = query.from ? parseISODate(query.from, 1900, 2100) : null;
     const baseDate = from ?? new Date();
     const termasukCutiBersama = parseBoolean(
       query.termasukCutiBersama,
@@ -183,11 +193,16 @@ export const liburNasionalRoutes = new Elysia({ name: "libur-nasional" })
       return { error: "Parameter start dan end wajib (YYYY-MM-DD)." };
     }
 
-    const start = parseISODate(query.start);
-    const end = parseISODate(query.end);
+    const start = parseISODate(query.start, 1900, 2100);
+    const end = parseISODate(query.end, 1900, 2100);
     if (!start || !end) {
       set.status = 400;
-      return { error: "Format tanggal tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format tanggal tidak valid. Gunakan format YYYY-MM-DD (1900-2100)." };
+    }
+
+    if (start > end) {
+      set.status = 400;
+      return { error: "start tidak boleh lebih besar dari end." };
     }
 
     const termasukCutiBersama = parseBoolean(

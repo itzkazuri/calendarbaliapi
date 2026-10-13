@@ -10,6 +10,8 @@ export const metaRoutes = new Elysia({ name: "meta" }).get("/meta", () => ({
     { method: "GET", path: "/api/libur-nasional/next" },
     { method: "GET", path: "/api/libur-nasional/workdays" },
     { method: "GET", path: "/api/rahinan" },
+    { method: "GET", path: "/api/rahinan/year" },
+    { method: "GET", path: "/api/rahinan/tahun" },
     { method: "GET", path: "/api/rahinan/range" },
     { method: "GET", path: "/api/dewasa-ayu" },
     { method: "GET", path: "/api/dewasa-ayu/best" },

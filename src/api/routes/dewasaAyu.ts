@@ -50,11 +50,22 @@ export const dewasaAyuRoutes = new Elysia({ name: "dewasa-ayu" })
       return { error: "Parameter start dan end wajib (YYYY-MM-DD)." };
     }
 
-    const start = parseISODate(query.start);
-    const end = parseISODate(query.end);
+    const start = parseISODate(query.start, 1900, 2100);
+    const end = parseISODate(query.end, 1900, 2100);
     if (!start || !end) {
       set.status = 400;
-      return { error: "Format tanggal tidak valid. Gunakan YYYY-MM-DD." };
+      return { error: "Format tanggal tidak valid. Gunakan format YYYY-MM-DD (rentang tahun 1900-2100)." };
+    }
+
+    if (start > end) {
+      set.status = 400;
+      return { error: "start tidak boleh lebih besar dari end." };
+    }
+
+    const diffDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays > 366) {
+      set.status = 400;
+      return { error: "Rentang maksimal pencarian hari terbaik adalah 1 tahun (366 hari)." };
     }
 
     const konteks = parseKonteks(query.konteks);
@@ -68,8 +79,15 @@ export const dewasaAyuRoutes = new Elysia({ name: "dewasa-ayu" })
       data: hasil.map(mapDewasa),
     };
   })
-  .get("/dewasa-ayu/next", ({ query }) => {
-    const from = query.from ? parseISODate(query.from) : null;
+  .get("/dewasa-ayu/next", ({ query, set }) => {
+    if (query.from) {
+      const parsed = parseISODate(query.from, 1900, 2100);
+      if (!parsed) {
+        set.status = 400;
+        return { error: "Format from tidak valid. Gunakan format YYYY-MM-DD." };
+      }
+    }
+    const from = query.from ? parseISODate(query.from, 1900, 2100) : null;
     const base = from ?? new Date();
 
     const konteks = parseKonteks(query.konteks);
@@ -78,7 +96,7 @@ export const dewasaAyuRoutes = new Elysia({ name: "dewasa-ayu" })
 
     const hasil = cariHariTerbaikBerikutnya(
       base,
-      Number.isFinite(hariKedepan) ? Math.trunc(hariKedepan) : 30,
+      Number.isFinite(hariKedepan) ? Math.min(365, Math.max(1, Math.trunc(hariKedepan))) : 30,
       konteks,
       topN,
     );

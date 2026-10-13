@@ -1,11 +1,27 @@
-export function parseISODate(input: string): Date | null {
-  const match = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(input);
+export function parseYear(
+  input: string | undefined,
+  minYear = 1900,
+  maxYear = 2100,
+): number | null {
+  if (!input) return null;
+  const year = Number(input.trim());
+  if (!Number.isInteger(year) || year < minYear || year > maxYear) return null;
+  return year;
+}
+
+export function parseISODate(
+  input: string,
+  minYear = 1900,
+  maxYear = 2600,
+): Date | null {
+  const match = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(input.trim());
   if (!match) return null;
 
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
 
+  if (year < minYear || year > maxYear) return null;
   if (month < 1 || month > 12) return null;
   if (day < 1 || day > 31) return null;
 
